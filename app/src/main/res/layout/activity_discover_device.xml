@@ -13,22 +13,13 @@
         android:orientation="vertical"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <TextView
-            style="@style/TextViewThin"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/margin_large"
-            android:drawablePadding="@dimen/margin_large"
-            android:drawableStart="@drawable/ic_left_arrow"
-            android:gravity="center_vertical"
-            android:text="@string/title_activity_discover_device"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textColor="@color/white" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/appBar"
@@ -36,6 +27,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/containerInstructions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -58,19 +50,56 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_large"
-                android:text="Connect it to the OTG Port"
+                android:text="Connect it to the OTG Port of the device"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
-            <com.wang.avi.AVLoadingIndicatorView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/margin_default"
-                app:indicatorName="BallSpinFadeLoaderIndicator" />
         </LinearLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/buttonRestartDiscovery"
+            android:layout_below="@+id/containerInstructions"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/margin_default">
 
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewPrinterList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/progressView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_large"
+                app:indicatorName="BallSpinFadeLoaderIndicator" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/buttonRestartDiscovery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:background="@drawable/button_curved_gradient">
+
+            <TextView
+                style="@style/TextViewDefault"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginEnd="@dimen/margin_large"
+                android:layout_marginStart="@dimen/margin_large"
+                android:layout_marginTop="@dimen/margin_small"
+                android:text="Restart Search"
+                android:textAlignment="center"
+                android:textColor="@color/white" />
+        </FrameLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

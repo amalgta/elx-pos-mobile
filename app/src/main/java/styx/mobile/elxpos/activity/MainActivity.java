@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 
+import styx.mobile.elxpos.Constants;
 import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.Utils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -38,11 +41,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.buttonConfigurePrinter:
                 intent = new Intent(MainActivity.this, DiscoverDeviceActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, Constants.RequestCodes.SelectDevice);
                 break;
             case R.id.buttonViewLastReceipt:
-                intent = new Intent(MainActivity.this, DiscoverDeviceActivity.class);
-                startActivity(intent);
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, final int resultCode, final Intent data) {
+        switch (requestCode) {
+            case Constants.RequestCodes.SelectDevice:
+                if (data != null && resultCode == RESULT_OK) {
+                    String deviceTarget = data.getStringExtra(Constants.BundleKeys.DeviceTarget);
+                    if (!TextUtils.isEmpty(deviceTarget)) {
+                        //EditText mEdtTarget = findViewById(R.id.edtTarget);
+                        //mEdtTarget.setText(deviceTarget);
+                    }
+                }
                 break;
         }
     }
