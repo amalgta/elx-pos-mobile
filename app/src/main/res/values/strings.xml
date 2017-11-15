@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">Elx POS</string>
+
+    <string name="RobotoBlack">fonts/RobotoBlack.ttf</string>
+    <string name="RobotoBlackItalic">fonts/RobotoBlackItalic.ttf</string>
+    <string name="RobotoBold">fonts/RobotoBold.ttf</string>
+    <string name="RobotoBoldItalic">fonts/RobotoBoldItalic.ttf</string>
+    <string name="RobotoCondensedBold">fonts/RobotoCondensedBold.ttf</string>
+    <string name="RobotoCondensedBoldItalic">fonts/RobotoCondensedBoldItalic.ttf</string>
+    <string name="RobotoCondensedItalic">fonts/RobotoCondensedItalic.ttf</string>
+    <string name="RobotoCondensedLight">fonts/RobotoCondensedLight.ttf</string>
+    <string name="RobotoCondensedLightItalic">fonts/RobotoCondensedLightItalic.ttf</string>
+    <string name="RobotoCondensedRegular">fonts/RobotoCondensedRegular.ttf</string>
+    <string name="RobotoItalic">fonts/RobotoItalic.ttf</string>
+    <string name="RobotoLight">fonts/RobotoLight.ttf</string>
+    <string name="RobotoLightItalic">fonts/RobotoLightItalic.ttf</string>
+    <string name="RobotoMedium">fonts/RobotoMedium.ttf</string>
+    <string name="RobotoMediumItalic">fonts/RobotoMediumItalic.ttf</string>
+    <string name="RobotoRegular">fonts/RobotoRegular.ttf</string>
+    <string name="RobotoThin">fonts/RobotoThin.ttf</string>
+    <string name="RobotoThinItalic">fonts/RobotoThinItalic.ttf</string>
+
+    <string name="title_activity_discover_device">Add Printer</string>
+
 </resources>
