@@ -21,4 +21,7 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
 
+    <color name="black_1">#30000000</color>
+    <color name="black_2">#10000000</color>
+
 </resources>

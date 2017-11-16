@@ -7,15 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 
-import styx.mobile.elxpos.Constants;
+import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.R;
-import styx.mobile.elxpos.Utils;
+import styx.mobile.elxpos.application.Utils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    View buttonConfigurePrinter, buttonViewLastReceipt;
+    View buttonConfigurePrinter, buttonViewLastReceipt, buttonAddEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +22,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         buttonConfigurePrinter = findViewById(R.id.buttonConfigurePrinter);
         buttonViewLastReceipt = findViewById(R.id.buttonViewLastReceipt);
+        buttonAddEntry = findViewById(R.id.buttonAddEntry);
 
         Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.blue));
 
         buttonConfigurePrinter.setOnClickListener(this);
         buttonViewLastReceipt.setOnClickListener(this);
+        buttonAddEntry.setOnClickListener(this);
     }
 
     @Override
@@ -43,7 +44,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent = new Intent(MainActivity.this, DiscoverDeviceActivity.class);
                 startActivityForResult(intent, Constants.RequestCodes.SelectDevice);
                 break;
-            case R.id.buttonViewLastReceipt:
+            case R.id.buttonAddEntry:
+                intent = new Intent(MainActivity.this, AddEntryActivity.class);
+                startActivity(intent);
                 break;
         }
     }
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case Constants.RequestCodes.SelectDevice:
                 if (data != null && resultCode == RESULT_OK) {
-                    String deviceTarget = data.getStringExtra(Constants.BundleKeys.DeviceTarget);
+                    String deviceTarget = data.getStringExtra(Constants.BundleKeys.DeviceName);
                     if (!TextUtils.isEmpty(deviceTarget)) {
                         //EditText mEdtTarget = findViewById(R.id.edtTarget);
                         //mEdtTarget.setText(deviceTarget);

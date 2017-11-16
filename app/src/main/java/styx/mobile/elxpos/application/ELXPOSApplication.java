@@ -1,7 +1,8 @@
-package styx.mobile.elxpos;
+package styx.mobile.elxpos.application;
 
 import android.app.Application;
 
+import styx.mobile.elxpos.R;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**

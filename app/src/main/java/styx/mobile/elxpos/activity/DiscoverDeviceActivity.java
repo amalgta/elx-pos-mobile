@@ -1,22 +1,22 @@
 package styx.mobile.elxpos.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.Printer;
 import android.view.View;
 
-import styx.mobile.elxpos.Constants;
+import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.adapter.PrinterRecyclerAdapter;
+import styx.mobile.elxpos.application.Utils;
+import styx.mobile.elxpos.model.Device;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import com.epson.epos2.discovery.Discovery;
 import com.epson.epos2.discovery.DiscoveryListener;
@@ -24,11 +24,8 @@ import com.epson.epos2.discovery.FilterOption;
 import com.epson.epos2.discovery.DeviceInfo;
 import com.epson.epos2.Epos2Exception;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
+import com.google.gson.Gson;
 import com.wang.avi.AVLoadingIndicatorView;
-
-import java.util.HashMap;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class DiscoverDeviceActivity extends AppCompatActivity implements View.OnClickListener, PrinterRecyclerAdapter.OnDeviceSelectedListener {
     Toolbar toolbar;
@@ -50,6 +47,7 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.colorPrimary));
 
         adapter = new PrinterRecyclerAdapter(this);
         recyclerViewPrinterList.setHasFixedSize(true);
@@ -75,6 +73,10 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
             onError();
             e.printStackTrace();
         }
+    }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     private void stopDiscovery() {
@@ -157,8 +159,14 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onDeviceSelected(DeviceInfo deviceInfo) {
+        if (deviceInfo == null) {
+            onError();
+            return;
+        }
+
+        Utils.persistData(this, Constants.DataBaseStorageKeys.Device, new Gson().toJson(new Device(deviceInfo)));
         Intent intent = new Intent();
-        intent.putExtra(Constants.BundleKeys.DeviceTarget, deviceInfo.getTarget());
+        intent.putExtra(Constants.BundleKeys.DeviceName, deviceInfo.getDeviceName());
         setResult(RESULT_OK, intent);
         finish();
     }

@@ -135,6 +135,7 @@
                 android:padding="@dimen/margin_small">
 
                 <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/buttonAddEntry"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:clickable="true"
