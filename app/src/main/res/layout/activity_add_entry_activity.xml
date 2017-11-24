@@ -74,7 +74,7 @@
                         android:hint="Transaction Number">
 
                         <EditText
-                            android:id="@+id/transactionNumber"
+                            android:id="@+id/inputTransactionNumber"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"
@@ -168,7 +168,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="numberDecimal"
-                            android:maxLength="3" />
+                            android:maxLength="8" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -198,8 +198,11 @@
 
 
                     <co.ceryle.radiorealbutton.RadioRealButtonGroup
+                        android:id="@+id/radioGroupVehicleClass"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small"
+                        android:layout_marginStart="@dimen/margin_small"
                         app:rrbg_animateDrawables_enter="overshoot"
                         app:rrbg_animateTexts_enter="overshoot"
                         app:rrbg_backgroundColor="@color/black_2"
@@ -210,6 +213,7 @@
                         app:rrbg_selectorSize="2dp">
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radioCarJeep"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -218,6 +222,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radioLCV"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -249,8 +254,11 @@
 
 
                         <co.ceryle.radiorealbutton.RadioRealButtonGroup
+                            android:id="@+id/radioGroupPaymentMethod"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_small"
+                            android:layout_marginStart="@dimen/margin_small"
                             app:rrbg_animateDrawables_enter="overshoot"
                             app:rrbg_animateTexts_enter="overshoot"
                             app:rrbg_backgroundColor="@color/black_2"
@@ -261,6 +269,7 @@
                             app:rrbg_selectorSize="2dp">
 
                             <co.ceryle.radiorealbutton.RadioRealButton
+                                android:id="@+id/radioCash"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:rrb_ripple="true"
@@ -269,6 +278,7 @@
                                 app:rrb_textColor="@color/black" />
 
                             <co.ceryle.radiorealbutton.RadioRealButton
+                                android:id="@+id/radioCard"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:rrb_ripple="true"
@@ -296,8 +306,11 @@
 
 
                         <co.ceryle.radiorealbutton.RadioRealButtonGroup
+                            android:id="@+id/radioGroupPassType"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_small"
+                            android:layout_marginStart="@dimen/margin_small"
                             app:rrbg_animateDrawables_enter="overshoot"
                             app:rrbg_animateTexts_enter="overshoot"
                             app:rrbg_backgroundColor="@color/black_2"
@@ -308,6 +321,7 @@
                             app:rrbg_selectorSize="2dp">
 
                             <co.ceryle.radiorealbutton.RadioRealButton
+                                android:id="@+id/radioMultiple"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:rrb_ripple="true"
@@ -316,6 +330,7 @@
                                 app:rrb_textColor="@color/black" />
 
                             <co.ceryle.radiorealbutton.RadioRealButton
+                                android:id="@+id/radioSingle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 app:rrb_ripple="true"
@@ -341,6 +356,7 @@
 
 
                     <co.ceryle.radiorealbutton.RadioRealButtonGroup
+                        android:id="@+id/radioGroupLane"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:rrbg_animateDrawables_enter="overshoot"
@@ -354,6 +370,7 @@
 
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -362,6 +379,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -370,6 +388,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -378,6 +397,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -386,6 +406,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -394,6 +415,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -402,6 +424,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio7"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -410,6 +433,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio8"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -418,6 +442,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio9"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -426,6 +451,7 @@
                             app:rrb_textColor="@color/black" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
+                            android:id="@+id/radio10"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
@@ -463,10 +489,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Print Receipt"
+                android:text="PROCESS ENTRY"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="16sp" />
+
         </FrameLayout>
     </android.support.v7.widget.CardView>
 </RelativeLayout>

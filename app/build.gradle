@@ -32,7 +32,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.github.santalu:respinner:1.0.1'
     implementation 'us.belka:androidtoggleswitch:1.2.2'
-    implementation    'com.github.ceryle:RadioRealButton:v2.1.1'
+    implementation 'com.github.ceryle:RadioRealButton:v2.1.1'
+    implementation 'com.muddzdev:styleabletoast:1.0.9'
+
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'

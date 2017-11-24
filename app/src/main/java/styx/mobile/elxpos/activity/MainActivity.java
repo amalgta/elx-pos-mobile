@@ -2,15 +2,21 @@ package styx.mobile.elxpos.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.github.javiersantos.bottomdialogs.BottomDialog;
+import com.google.gson.Gson;
+
 import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.R;
+import styx.mobile.elxpos.application.ShowError;
 import styx.mobile.elxpos.application.Utils;
+import styx.mobile.elxpos.model.Entry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -47,6 +53,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.buttonAddEntry:
                 intent = new Intent(MainActivity.this, AddEntryActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.buttonViewLastReceipt:
+                if (Utils.getPersistData(this, Constants.DataBaseStorageKeys.LastPrintedReceipt) != null) {
+                    Entry entry = new Gson().fromJson(Utils.getPersistData(this, Constants.DataBaseStorageKeys.LastPrintedReceipt), Entry.class);
+                    intent = new Intent(MainActivity.this, AddEntryActivity.class);
+                    intent.putExtra(Constants.BundleKeys.Entry, entry);
+                    startActivity(intent);
+                } else {
+                    ShowError.onError(this,
+                            "No saved receipts. Please create one.",
+                            "Dismiss",
+                            new BottomDialog.ButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull BottomDialog dialog) {
+                                    startActivity(new Intent(MainActivity.this, AddEntryActivity.class));
+                                }
+                            }
+                    );
+                }
                 break;
         }
     }
