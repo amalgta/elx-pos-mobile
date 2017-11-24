@@ -1,4 +1,4 @@
-package styx.mobile.elxpos.application;
+package styx.mobile.elxpos.application.printer;
 
 import android.content.Context;
 
@@ -59,5 +59,22 @@ public class PrinterUtils {
         }
 
         return msg;
+    }
+
+    public static String makeWarningMessage(Context context, PrinterStatusInfo status) {
+        String warningsMsg = "";
+        if (status == null) {
+            return "Invalid status";
+        }
+
+        if (status.getPaper() == Printer.PAPER_NEAR_END) {
+            warningsMsg += context.getString(R.string.handlingmsg_warn_receipt_near_end);
+        }
+
+        if (status.getBatteryLevel() == Printer.BATTERY_LEVEL_1) {
+            warningsMsg += context.getString(R.string.handlingmsg_warn_battery_near_end);
+        }
+
+        return warningsMsg;
     }
 }

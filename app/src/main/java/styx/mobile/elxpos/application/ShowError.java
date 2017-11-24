@@ -59,4 +59,7 @@ public class ShowError {
                 .show();
     }
 
+    public static void onError(Activity runnable, String disconnect) {
+
+    }
 }
