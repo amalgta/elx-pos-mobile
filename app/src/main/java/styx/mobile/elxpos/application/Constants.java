@@ -7,9 +7,6 @@ package styx.mobile.elxpos.application;
 public class Constants {
     public static String dbStorageKey = "privateStorage";
 
-    public static final long InvalidInt = -1L;
-    public static final float InvalidFloat = -1.0f;
-
     public interface BundleKeys {
         String DeviceName = "DeviceName";
         String PersistedEntry = "PersistedEntry";
@@ -23,11 +20,10 @@ public class Constants {
     public interface DataBaseStorageKeys {
         String Device = "Device";
         String LastPrintedReceipt = "LastPrintedReceipt";
-
-
+        String ContactNumber= "ContactNumber";
     }
 
     public interface DateFormat {
-        String PrintDate = "DD-MMM-YYYY h:m:s a";
+        String PrintDate = "d-mmm-yyyy h:m:s a";
     }
 }

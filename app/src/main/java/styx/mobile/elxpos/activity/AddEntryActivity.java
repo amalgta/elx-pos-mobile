@@ -1,22 +1,16 @@
 package styx.mobile.elxpos.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.epson.epos2.discovery.DeviceInfo;
-import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.gson.Gson;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
 
@@ -24,9 +18,8 @@ import co.ceryle.radiorealbutton.RadioRealButton;
 import co.ceryle.radiorealbutton.RadioRealButtonGroup;
 import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.application.Constants;
-import styx.mobile.elxpos.application.ShowError;
 import styx.mobile.elxpos.application.Utils;
-import styx.mobile.elxpos.application.printer.OnDetectDeviceListener;
+import styx.mobile.elxpos.application.printer.DiscoverCallBacks;
 import styx.mobile.elxpos.application.printer.PrinterCallBacks;
 import styx.mobile.elxpos.application.printer.TPrinter;
 import styx.mobile.elxpos.model.Entry;
@@ -38,7 +31,8 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
     private EditText inputTransactionNumber, inputRegistrationNumber, inputColumnNumber, inputAmountPaid;
     private RadioRealButtonGroup radioGroupVehicleClass, radioGroupPaymentMethod, radioGroupPassType, radioGroupLane;
     private Entry entry;
-    TPrinter tPrinter;
+    private TPrinter tPrinter2;
+    private MaterialDialog materialDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +41,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
 
         Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.blue));
 
-        buttonCapture = findViewById(R.id.buttonCapture);
+        buttonCapture = findViewById(R.id.buttonSave);
         inputTransactionNumber = findViewById(R.id.inputTransactionNumber);
         inputRegistrationNumber = findViewById(R.id.inputRegistrationNumber);
         inputColumnNumber = findViewById(R.id.inputColumnNumber);
@@ -75,7 +69,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
             setEntry(null);
         }
 
-        tPrinter = new TPrinter(this, this);
+        tPrinter2 = new TPrinter(this, this);
     }
 
     private void setEntry(Entry entry) {
@@ -132,7 +126,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.buttonCapture:
+            case R.id.buttonSave:
                 doSaveEntry();
                 break;
         }
@@ -149,7 +143,12 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         outState.putParcelable(Constants.BundleKeys.PersistedEntry, entry);
     }
 
-    private void updateButtonState(final boolean state) {
+    private void showProgress(boolean state) {
+        if (state)
+            materialDialog = startProgress();
+        else
+            stopProgress(materialDialog);
+        /*
         buttonCapture
                 .animate()
                 .alpha(state ? 1.0f : 0.0f)
@@ -161,6 +160,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                         buttonCapture.setVisibility(state ? View.VISIBLE : View.GONE);
                     }
                 });
+       */
     }
 
     @Override
@@ -181,86 +181,74 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
 
         entry = new Entry(transactionNumber, registrationNumber, columnNumber, amountPaid, vehicleClass, paymentMethod, passType, lane);
         Utils.persistData(AddEntryActivity.this, Constants.DataBaseStorageKeys.LastPrintedReceipt, new Gson().toJson(entry));
-
-        doPrint(entry);
-    }
-
-    private void doPrint(final Entry entry) {
         if (isValid(entry)) {
-            MaterialDialog bottomDialog = startProgress();
-            if (runPrintReceiptSequence(entry)) {
-                setEntry(new Entry());
-            }
-            stopProgress(bottomDialog);
+            showProgress(true);
+            tPrinter2.startDiscovery(new DiscoverCallBacks() {
+                @Override
+                public void onDeviceDetected(DeviceInfo deviceInfo) {
+                    tPrinter2.setTarget(deviceInfo.getTarget());
+                    if (!tPrinter2.runPrintReceiptSequence(entry)) {
+                        showProgress(false);
+                        setEntry(new Entry());
+                    }
+                }
+            });
         }
     }
 
-    private MaterialDialog startProgress() {
-        return new MaterialDialog.Builder(this)
-                //.title("Loading")
-                .content("Printing on progress.")
-                .cancelable(false)
-                .progress(true, 0)
-                .show();
-
-    }
-
-    private void stopProgress(MaterialDialog bottomDialog) {
-        bottomDialog.dismiss();
-    }
-
-    private boolean runPrintReceiptSequence(Entry entry) {
-        if (!tPrinter.initiatePrinter()) {
-            return false;
-        }
-        if (!tPrinter.connect()) return false;
-
-        if (!tPrinter.printBuffer(entry)) {
-            return false;
-        }
-        return true;
-    }
-
+    /*
     public void onError(final String message) {
+        /*
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ShowError.onError(AddEntryActivity.this, message, "RETRY", new BottomDialog.ButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull BottomDialog bottomDialog) {
-                        doPrint(entry);
-                    }
-                }, "CANCEL", new BottomDialog.ButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull BottomDialog bottomDialog) {
-                        //startActivity(new Intent(AddEntryActivity.this, AddEntryActivity.class));
-                        //finish();
-                    }
-                });
+                try {
+                    ShowError.onError(
+                            AddEntryActivity.this,
+                            message,
+                            "RETRY",
+                            new BottomDialog.ButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull BottomDialog bottomDialog) {
+                                    doPrint(entry);
+                                }
+                            },
+                            "CANCEL",
+                            new BottomDialog.ButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull BottomDialog bottomDialog) {
+                                    //startActivity(new Intent(AddEntryActivity.this, AddEntryActivity.class));
+                                    //finish();
+                                }
+                            });
+                } catch (Exception e) {
+
+                }
             }
         });
-    }
+}
 
     @Override
-    public void onConnectionFailed() {
+    public void onPrinterNotConnected() {
+
         OnDetectDeviceListener onDetectDeviceListener = new OnDetectDeviceListener() {
             int x = 0;
 
             @Override
             public void onDetectDevice(DeviceInfo deviceInfo) {
-                tPrinter.setPrinterTarget(deviceInfo.getTarget());
+                tPrinter2.setPrinterTarget(deviceInfo.getTarget());
                 doPrint(entry);
             }
 
             @Override
             public void onDetectError() {
                 if (++x < 5)
-                    tPrinter.startDiscovery(this);
+                    tPrinter2.startDiscovery(this);
                 else
-                    onError("Searching stopped.");
+                    onError("Unable to detect device.");
             }
         };
-        tPrinter.startDiscovery(onDetectDeviceListener);
+        tPrinter2.startDiscovery(onDetectDeviceListener);
     }
 
     @Override
@@ -268,17 +256,13 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(AddEntryActivity.this, "Ready to print", Toast.LENGTH_SHORT).show();
+                stopProgress(materialDialog);
+                tPrinter2.disconnect();
             }
         });
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                tPrinter.disconnect();
-            }
-        }).start();
     }
+        */
+
 
     private boolean isValid(Entry entry) {
         if (entry == null) return false;
@@ -316,4 +300,39 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         }
         return true;
     }
+
+    private MaterialDialog startProgress() {
+        return new MaterialDialog.Builder(this)
+                //.title("Loading")
+                .content("Printing on progress.")
+                .cancelable(false)
+                .progress(true, 0)
+                .show();
+
+    }
+
+    private void stopProgress(MaterialDialog bottomDialog) {
+        if (bottomDialog == null) return;
+        bottomDialog.dismiss();
+    }
+
+    @Override
+    public void onPrinterReady(String status) {
+        showProgress(false);
+    }
+
+    @Override
+    public void onError(Exception errorMessage, String message) {
+        showProgress(false);
+
+        //ShowMsg.showException(errorMessage, message);
+    }
+
+    @Override
+    public void onMessage(String message) {
+        showProgress(false);
+
+        //ShowMsg.showMessage(message);
+    }
+
 }
