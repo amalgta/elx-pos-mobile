@@ -3,17 +3,24 @@ package styx.mobile.elxpos.application.printer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
+import android.util.Log;
 
+import com.epson.epos2.ConnectionListener;
 import com.epson.epos2.Epos2Exception;
+import com.epson.epos2.discovery.DeviceInfo;
+import com.epson.epos2.discovery.Discovery;
+import com.epson.epos2.discovery.DiscoveryListener;
+import com.epson.epos2.discovery.FilterOption;
 import com.epson.epos2.printer.Printer;
 import com.epson.epos2.printer.PrinterStatusInfo;
 import com.epson.epos2.printer.ReceiveListener;
-import com.google.gson.Gson;
 
+import java.util.Arrays;
+
+import styx.mobile.elxpos.BuildConfig;
 import styx.mobile.elxpos.R;
-import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.application.Utils;
-import styx.mobile.elxpos.model.Device;
 import styx.mobile.elxpos.model.Entry;
 
 /**
@@ -21,132 +28,54 @@ import styx.mobile.elxpos.model.Entry;
  */
 
 public class TPrinter implements ReceiveListener {
+    private static final String TAG = "PrinterLog";
+
     private Printer printer;
     private Context context;
+    private String printerTarget;
     private PrinterCallBacks printerCallBacks;
 
     public TPrinter(Context context, PrinterCallBacks printerCallBacks) {
+        this(context, printerCallBacks, "");
+    }
+
+    public TPrinter(Context context, PrinterCallBacks printerCallBacks, String printerTarget) {
         this.context = context;
+        this.printerTarget = printerTarget;
         this.printerCallBacks = printerCallBacks;
     }
 
-    public boolean initializeObject() {
+    public void setPrinterTarget(String printerTarget) {
+        this.printerTarget = printerTarget;
+    }
+
+    public boolean initiatePrinter() {
         try {
             printer = new Printer(0, 0, context);
         } catch (Exception e) {
-            printerCallBacks.onError("Printer");
+            printerCallBacks.onError("Unable to initiate printer.");
+            onLog(e);
             return false;
         }
         printer.setReceiveEventListener(this);
         return true;
     }
 
-    @Override
-    public void onPtrReceive(Printer printer, int i, PrinterStatusInfo printerStatusInfo, String s) {
-        //makeWarningMessage(printerStatusInfo);
-        printerCallBacks.onPrinterConnected(PrinterUtils.makeErrorMessage(context, printerStatusInfo));
-    }
-
-    public void disconnectPrinter() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (printer == null) return;
-                try {
-                    printer.endTransaction();
-                } catch (final Exception e) {
-                    printerCallBacks.onError("endTransaction");
-                }
-                try {
-                    printer.disconnect();
-                } catch (final Exception e) {
-                    printerCallBacks.onError("disconnect");
-                }
-                finalizeObject();
-            }
-        }).start();
-    }
-
-    private boolean isPrintable(PrinterStatusInfo status) {
-        if (status == null) return false;
-        if (status.getConnection() == Printer.FALSE) {
+    public boolean printBuffer(Entry entry) {
+        if (!generateDataBuffer(entry)) {
+            recycle();
             return false;
-        } else if (status.getOnline() == Printer.FALSE) {
+        }
+
+
+        if (!printData()) {
+            recycle();
             return false;
         }
         return true;
     }
 
-    private boolean printData() {
-        if (printer == null) {
-            return false;
-        }
-
-        if (!connectPrinter()) {
-            return false;
-        }
-
-        PrinterStatusInfo status = printer.getStatus();
-
-        //PrinterUtils.makeWarningMessage(context, status);
-
-        if (!isPrintable(status)) {
-            printerCallBacks.onError(PrinterUtils.makeErrorMessage(context, status));
-            try {
-                printer.disconnect();
-            } catch (Exception ex) {
-                // Do nothing
-            }
-            return false;
-        }
-
-        try {
-            printer.sendData(Printer.PARAM_DEFAULT);
-        } catch (Exception e) {
-            printerCallBacks.onError("sendData");
-            try {
-                printer.disconnect();
-            } catch (Exception ex) {
-                // Do nothing
-            }
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean connectPrinter() {
-        boolean isBeginTransaction = false;
-        if (printer == null) {
-            return false;
-        }
-        try {
-            Device device = new Gson().fromJson(Utils.getPersistData(context, Constants.DataBaseStorageKeys.Device), Device.class);
-            printer.connect(device.getTarget(), Printer.PARAM_DEFAULT);
-        } catch (Exception e) {
-            printerCallBacks.onError("connect");
-            return false;
-        }
-
-        try {
-            printer.beginTransaction();
-            isBeginTransaction = true;
-        } catch (Exception e) {
-            printerCallBacks.onError("beginTransaction");
-        }
-
-        if (!isBeginTransaction) {
-            try {
-                printer.disconnect();
-            } catch (Epos2Exception e) {
-                // Do nothing
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean createReceiptData(Entry entry) {
+    private boolean generateDataBuffer(Entry entry) {
         String method = "";
         Bitmap logoData = BitmapFactory.decodeResource(context.getResources(), R.drawable.store);
         StringBuilder textData = new StringBuilder();
@@ -250,29 +179,157 @@ public class TPrinter implements ReceiveListener {
             printer.addCut(Printer.CUT_FEED);
 
         } catch (Exception e) {
-            printerCallBacks.onError(method);
+            printerCallBacks.onError(method + e.toString());
             return false;
         }
         textData = null;
         return true;
     }
 
-    public void finalizeObject() {
-        if (printer == null) return;
-        printer.clearCommandBuffer();
-        printer.setReceiveEventListener(null);
-        printer = null;
-    }
 
-    public boolean printReceipt(Entry entry) {
-        if (!createReceiptData(entry)) {
-            finalizeObject();
+    private boolean printData() {
+        if (printer == null) return false;
+
+        PrinterStatusInfo status = printer.getStatus();
+
+        if (BuildConfig.DEBUG) {
+            Log.e(TAG, PrinterUtils.makeWarningMessage(context, status));
+        }
+
+        if (!isPrintable(status)) {
+            printerCallBacks.onError(PrinterUtils.makeErrorMessage(context, status));
+            disconnect();
             return false;
         }
-        if (!printData()) {
-            finalizeObject();
+
+        try {
+            printer.sendData(Printer.PARAM_DEFAULT);
+        } catch (Exception e) {
+            printerCallBacks.onError("Unable to print.");
+            disconnect();
+            return false;
+        }
+
+        return true;
+    }
+
+    public void disconnect() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (printer == null) return;
+                try {
+                    printer.endTransaction();
+                } catch (final Exception e) {
+                    printerCallBacks.onError("Error ending active tasks.");
+                }
+                try {
+                    printer.disconnect();
+                } catch (final Exception e) {
+                    printerCallBacks.onError("Disconnect failure.");
+                }
+                recycle();
+            }
+        }).start();
+    }
+
+    public boolean connect() {
+        if (printer == null) return false;
+        boolean isBeginTransaction = false;
+        try {
+            if (TextUtils.isEmpty(printerTarget)) {
+                printerCallBacks.onConnectionFailed();
+                return false;
+            } else {
+                printer.connect(printerTarget, Printer.PARAM_DEFAULT);
+            }
+        } catch (Exception e) {
+            PrinterStatusInfo status = printer.getStatus();
+            return false;
+        }
+
+        try {
+            printer.beginTransaction();
+            isBeginTransaction = true;
+        } catch (Exception e) {
+            printerCallBacks.onError("beginTransaction" + e.toString());
+        }
+
+        if (!isBeginTransaction) {
+            disconnect();
+        }
+        return true;
+    }
+
+    public void startDiscovery(final OnDetectDeviceListener onDetectDeviceListener) {
+        DiscoveryListener discoveryListener = new DiscoveryListener() {
+            @Override
+            public void onDiscovery(final DeviceInfo deviceInfo) {
+                onLog("onDiscovery():" + deviceInfo.getDeviceName());
+                onDetectDeviceListener.onDetectDevice(deviceInfo);
+                stopDiscovery();
+            }
+        };
+        try {
+            Discovery.start(context, generateFilterOption(), discoveryListener);
+        } catch (Exception e) {
+            onDetectDeviceListener.onDetectError();
+            e.printStackTrace();
+        }
+    }
+
+    public void stopDiscovery() {
+        while (true) {
+            try {
+                Discovery.stop();
+                break;
+            } catch (Epos2Exception e) {
+                if (e.getErrorStatus() != Epos2Exception.ERR_PROCESSING) {
+                    return;
+                }
+            }
+        }
+    }
+
+    private static FilterOption generateFilterOption() {
+        FilterOption filterOption = new FilterOption();
+        filterOption.setDeviceType(Discovery.TYPE_PRINTER);
+        filterOption.setEpsonFilter(Discovery.FILTER_NAME);
+        return filterOption;
+    }
+
+    private boolean isPrintable(PrinterStatusInfo status) {
+        if (status == null) return false;
+        if (status.getConnection() == Printer.FALSE) {
+            return false;
+        } else if (status.getOnline() == Printer.FALSE) {
             return false;
         }
         return true;
+    }
+
+    public void recycle() {
+        if (printer == null) return;
+        printer.clearCommandBuffer();
+        printer.setReceiveEventListener(null);
+        printer.setStatusChangeEventListener(null);
+        printer.setConnectionEventListener(null);
+        printer = null;
+    }
+
+    @Override
+    public void onPtrReceive(final Printer printerObj, final int code, final PrinterStatusInfo status, final String printJobId) {
+        //makeWarningMessage(printerStatusInfo);
+        printerCallBacks.onPrinterReady(code + " " + PrinterUtils.makeErrorMessage(context, status));
+    }
+
+    private void onLog(String string) {
+        if (BuildConfig.DEBUG) {
+            Log.e("TPrinter", string);
+        }
+    }
+
+    private void onLog(Exception e) {
+        onLog(Arrays.toString(e.getStackTrace()));
     }
 }

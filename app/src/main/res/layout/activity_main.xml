@@ -47,7 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_default"
                 android:background="?selectableItemBackground"
-                android:clickable="true"
+                android:clickable="true"                android:visibility="gone"
+
                 android:focusable="true"
                 android:padding="@dimen/margin_default">
 
@@ -75,6 +76,7 @@
                 android:layout_height="1dp"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:layout_marginEnd="@dimen/margin_default"
+                android:visibility="gone"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginTop="@dimen/margin_small"
                 android:background="@drawable/gradient_glossy_bar" />

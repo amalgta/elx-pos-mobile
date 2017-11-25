@@ -11,21 +11,20 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import styx.mobile.elxpos.application.Constants;
-import styx.mobile.elxpos.R;
-import styx.mobile.elxpos.adapter.PrinterRecyclerAdapter;
-import styx.mobile.elxpos.application.Utils;
-import styx.mobile.elxpos.model.Device;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
-
-import com.epson.epos2.discovery.Discovery;
-import com.epson.epos2.discovery.DiscoveryListener;
-import com.epson.epos2.discovery.FilterOption;
 import com.epson.epos2.discovery.DeviceInfo;
-import com.epson.epos2.Epos2Exception;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.gson.Gson;
 import com.wang.avi.AVLoadingIndicatorView;
+
+import styx.mobile.elxpos.R;
+import styx.mobile.elxpos.adapter.PrinterRecyclerAdapter;
+import styx.mobile.elxpos.application.Constants;
+import styx.mobile.elxpos.application.Utils;
+import styx.mobile.elxpos.application.printer.OnDetectDeviceListener;
+import styx.mobile.elxpos.application.printer.PrinterCallBacks;
+import styx.mobile.elxpos.application.printer.TPrinter;
+import styx.mobile.elxpos.model.Device;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class DiscoverDeviceActivity extends AppCompatActivity implements View.OnClickListener, PrinterRecyclerAdapter.OnDeviceSelectedListener {
     Toolbar toolbar;
@@ -33,11 +32,14 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
     PrinterRecyclerAdapter adapter;
     AVLoadingIndicatorView progressView;
     View buttonRestartDiscovery;
+    TPrinter tPrinter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover_device);
+        Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.colorPrimary));
+
         toolbar = findViewById(R.id.toolbar);
         progressView = findViewById(R.id.progressView);
         recyclerViewPrinterList = findViewById(R.id.recyclerViewPrinterList);
@@ -47,7 +49,6 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.colorPrimary));
 
         adapter = new PrinterRecyclerAdapter(this);
         recyclerViewPrinterList.setHasFixedSize(true);
@@ -56,57 +57,74 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
 
         buttonRestartDiscovery.setOnClickListener(this);
 
-        startDiscovery();
+        tPrinter = new TPrinter(this, new PrinterCallBacks() {
+            @Override
+            public void onPrinterReady(String status) {
+
+            }
+
+            @Override
+            public void onError(String sendData) {
+
+            }
+
+            @Override
+            public void onConnectionFailed() {
+
+            }
+
+        });
+        tPrinter.startDiscovery(new OnDetectDeviceListener() {
+            @Override
+            public void onDetectDevice(final DeviceInfo deviceInfo) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (adapter == null) return;
+                        progressView.smoothToHide();
+                        adapter.add(deviceInfo);
+                    }
+                });
+            }
+
+            @Override
+            public void onDetectError() {
+
+            }
+        });
     }
 
-    private static FilterOption generateFilterOption() {
-        FilterOption filterOption = new FilterOption();
-        filterOption.setDeviceType(Discovery.TYPE_PRINTER);
-        filterOption.setEpsonFilter(Discovery.FILTER_NAME);
-        return filterOption;
-    }
-
-    private void startDiscovery() {
-        try {
-            Discovery.start(this, generateFilterOption(), mDiscoveryListener);
-        } catch (Exception e) {
-            onError();
-            e.printStackTrace();
-        }
-    }
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
-    private void stopDiscovery() {
-        while (true) {
-            try {
-                Discovery.stop();
-                break;
-            } catch (Epos2Exception e) {
-                if (e.getErrorStatus() != Epos2Exception.ERR_PROCESSING) {
-                    onError();
-                    e.printStackTrace();
-                    return;
-                }
-            }
-        }
-    }
 
     private void restartDiscovery() {
         progressView.smoothToHide();
-        stopDiscovery();
+        tPrinter.stopDiscovery();
 
         adapter.clear();
         progressView.smoothToShow();
 
-        try {
-            Discovery.start(this, generateFilterOption(), mDiscoveryListener);
-        } catch (Exception e) {
-            onError();
-            e.printStackTrace();
-        }
+        tPrinter.startDiscovery(new OnDetectDeviceListener() {
+            @Override
+            public void onDetectDevice(final DeviceInfo deviceInfo) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (adapter == null) return;
+                        progressView.smoothToHide();
+                        adapter.add(deviceInfo);
+                    }
+                });
+            }
+
+            @Override
+            public void onDetectError() {
+
+            }
+        });
     }
 
     public void onError() {
@@ -128,7 +146,7 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopDiscovery();
+        tPrinter.stopDiscovery();
     }
 
     @Override
@@ -142,20 +160,6 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
                 break;
         }
     }
-
-    private DiscoveryListener mDiscoveryListener = new DiscoveryListener() {
-        @Override
-        public void onDiscovery(final DeviceInfo deviceInfo) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public synchronized void run() {
-                    if (adapter == null) return;
-                    progressView.smoothToHide();
-                    adapter.add(deviceInfo);
-                }
-            });
-        }
-    };
 
     @Override
     public void onDeviceSelected(DeviceInfo deviceInfo) {

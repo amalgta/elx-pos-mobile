@@ -37,7 +37,7 @@ public class ShowError {
                                BottomDialog.ButtonCallback onPositiveClick) {
         new BottomDialog.Builder(activity)
                 .setTitle("Error")
-                .setContent(message)
+                .setContent(message).setCancelable(false)
                 .setPositiveText(positiveText)
                 .onPositive(onPositiveClick)
                 .show();
@@ -53,13 +53,9 @@ public class ShowError {
                 .setTitle("Error")
                 .setContent(message)
                 .setPositiveText(positiveText)
-                .onPositive(onPositiveClick)
+                .onPositive(onPositiveClick).setCancelable(false)
                 .setNegativeText(negativeText)
                 .onNegative(onNegativeClick)
                 .show();
-    }
-
-    public static void onError(Activity runnable, String disconnect) {
-
     }
 }

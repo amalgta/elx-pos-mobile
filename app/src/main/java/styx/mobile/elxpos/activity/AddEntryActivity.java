@@ -3,15 +3,19 @@ package styx.mobile.elxpos.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.epson.epos2.discovery.DeviceInfo;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.gson.Gson;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
@@ -20,10 +24,11 @@ import co.ceryle.radiorealbutton.RadioRealButton;
 import co.ceryle.radiorealbutton.RadioRealButtonGroup;
 import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.application.Constants;
-import styx.mobile.elxpos.application.printer.PrinterCallBacks;
 import styx.mobile.elxpos.application.ShowError;
-import styx.mobile.elxpos.application.printer.TPrinter;
 import styx.mobile.elxpos.application.Utils;
+import styx.mobile.elxpos.application.printer.OnDetectDeviceListener;
+import styx.mobile.elxpos.application.printer.PrinterCallBacks;
+import styx.mobile.elxpos.application.printer.TPrinter;
 import styx.mobile.elxpos.model.Entry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -40,6 +45,8 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_entry_activity);
 
+        Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.blue));
+
         buttonCapture = findViewById(R.id.buttonCapture);
         inputTransactionNumber = findViewById(R.id.inputTransactionNumber);
         inputRegistrationNumber = findViewById(R.id.inputRegistrationNumber);
@@ -50,15 +57,11 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         radioGroupPassType = findViewById(R.id.radioGroupPassType);
         radioGroupLane = findViewById(R.id.radioGroupLane);
 
-        Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.blue));
-
         buttonCapture.setOnClickListener(this);
         radioGroupVehicleClass.setOnClickedButtonListener(this);
         radioGroupPaymentMethod.setOnClickedButtonListener(this);
         radioGroupPassType.setOnClickedButtonListener(this);
         radioGroupLane.setOnClickedButtonListener(this);
-
-        tPrinter = new TPrinter(this, this);
 
         if (savedInstanceState != null) {
             Entry entry = savedInstanceState.getParcelable(Constants.BundleKeys.PersistedEntry);
@@ -71,37 +74,58 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         } else {
             setEntry(null);
         }
+
+        tPrinter = new TPrinter(this, this);
     }
 
     private void setEntry(Entry entry) {
-        if (entry == null)
+        if (entry == null) {
             this.entry = new Entry();
-        else
+            bindUI(this.entry);
+        } else
             bindUI(entry);
     }
 
     private void bindUI(Entry entry) {
-        inputAmountPaid.setText(entry.getAmountPaid());
-        inputTransactionNumber.setText(entry.getTransactionNumber());
-        inputRegistrationNumber.setText(entry.getRegistrationNumber());
-        inputColumnNumber.setText(entry.getColumnNumber());
+        inputAmountPaid.setText(TextUtils.isEmpty(entry.getAmountPaid()) ? "" : entry.getAmountPaid());
+        inputTransactionNumber.setText(TextUtils.isEmpty(entry.getTransactionNumber()) ? "" : entry.getTransactionNumber());
+        inputRegistrationNumber.setText(TextUtils.isEmpty(entry.getRegistrationNumber()) ? "" : entry.getRegistrationNumber());
+        inputColumnNumber.setText(TextUtils.isEmpty(entry.getColumnNumber()) ? "" : entry.getColumnNumber());
 
-        for (int i = 0; i < radioGroupVehicleClass.getButtons().size(); i++) {
-            if (radioGroupVehicleClass.getButtons().get(i).getText().contentEquals(entry.getVehicleClass()))
-                radioGroupVehicleClass.setPosition(i);
+        if (TextUtils.isEmpty(entry.getVehicleClass())) {
+            radioGroupVehicleClass.setPosition(-1);
+        } else {
+            for (int i = 0; i < radioGroupVehicleClass.getButtons().size(); i++) {
+                if (radioGroupVehicleClass.getButtons().get(i).getText().contentEquals(entry.getVehicleClass()))
+                    radioGroupVehicleClass.setPosition(i);
+            }
+        }
 
+        if (TextUtils.isEmpty(entry.getPaymentMethod())) {
+            radioGroupPaymentMethod.setPosition(-1);
+        } else {
+            for (int i = 0; i < radioGroupPaymentMethod.getButtons().size(); i++) {
+                if (radioGroupPaymentMethod.getButtons().get(i).getText().contentEquals(entry.getPaymentMethod()))
+                    radioGroupPaymentMethod.setPosition(i);
+            }
         }
-        for (int i = 0; i < radioGroupPaymentMethod.getButtons().size(); i++) {
-            if (radioGroupPaymentMethod.getButtons().get(i).getText().contentEquals(entry.getPaymentMethod()))
-                radioGroupPaymentMethod.setPosition(i);
+
+        if (TextUtils.isEmpty(entry.getPassType())) {
+            radioGroupPassType.setPosition(-1);
+        } else {
+            for (int i = 0; i < radioGroupPassType.getButtons().size(); i++) {
+                if (radioGroupPassType.getButtons().get(i).getText().contentEquals(entry.getPassType()))
+                    radioGroupPassType.setPosition(i);
+            }
         }
-        for (int i = 0; i < radioGroupPassType.getButtons().size(); i++) {
-            if (radioGroupPassType.getButtons().get(i).getText().contentEquals(entry.getPassType()))
-                radioGroupPassType.setPosition(i);
-        }
-        for (int i = 0; i < radioGroupLane.getButtons().size(); i++) {
-            if (radioGroupLane.getButtons().get(i).getText().contentEquals(entry.getLane()))
-                radioGroupLane.setPosition(i);
+
+        if (TextUtils.isEmpty(entry.getLane())) {
+            radioGroupLane.setPosition(-1);
+        } else {
+            for (int i = 0; i < radioGroupLane.getButtons().size(); i++) {
+                if (radioGroupLane.getButtons().get(i).getText().contentEquals(entry.getLane()))
+                    radioGroupLane.setPosition(i);
+            }
         }
     }
 
@@ -128,7 +152,6 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
     private void updateButtonState(final boolean state) {
         buttonCapture
                 .animate()
-                .translationY(buttonCapture.getHeight())
                 .alpha(state ? 1.0f : 0.0f)
                 .setDuration(300)
                 .setListener(new AnimatorListenerAdapter() {
@@ -138,6 +161,11 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                         buttonCapture.setVisibility(state ? View.VISIBLE : View.GONE);
                     }
                 });
+    }
+
+    @Override
+    public void onClickedButton(RadioRealButton button, int position) {
+        Utils.hideKeyboard(this);
     }
 
     private void doSaveEntry() {
@@ -151,22 +179,109 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         String passType = (radioGroupPassType.getPosition() >= 0) ? radioGroupPassType.getButtons().get(radioGroupPassType.getPosition()).getText() : "";
         String lane = (radioGroupLane.getPosition() >= 0) ? radioGroupLane.getButtons().get(radioGroupLane.getPosition()).getText() : "";
 
-        final Entry entry = new Entry(transactionNumber, registrationNumber, columnNumber, amountPaid, vehicleClass, paymentMethod, passType, lane);
+        entry = new Entry(transactionNumber, registrationNumber, columnNumber, amountPaid, vehicleClass, paymentMethod, passType, lane);
+        Utils.persistData(AddEntryActivity.this, Constants.DataBaseStorageKeys.LastPrintedReceipt, new Gson().toJson(entry));
 
+        doPrint(entry);
+    }
+
+    private void doPrint(final Entry entry) {
         if (isValid(entry)) {
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    Utils.persistData(AddEntryActivity.this, Constants.DataBaseStorageKeys.LastPrintedReceipt, new Gson().toJson(entry));
-                    BottomDialog bottomDialog = ShowError.showProgress(AddEntryActivity.this);
-                    runPrintReceiptSequence(entry);
-                    bottomDialog.dismiss();
-                }
-            });
+            MaterialDialog bottomDialog = startProgress();
+            if (runPrintReceiptSequence(entry)) {
+                setEntry(new Entry());
+            }
+            stopProgress(bottomDialog);
         }
     }
 
+    private MaterialDialog startProgress() {
+        return new MaterialDialog.Builder(this)
+                //.title("Loading")
+                .content("Printing on progress.")
+                .cancelable(false)
+                .progress(true, 0)
+                .show();
+
+    }
+
+    private void stopProgress(MaterialDialog bottomDialog) {
+        bottomDialog.dismiss();
+    }
+
+    private boolean runPrintReceiptSequence(Entry entry) {
+        if (!tPrinter.initiatePrinter()) {
+            return false;
+        }
+        if (!tPrinter.connect()) return false;
+
+        if (!tPrinter.printBuffer(entry)) {
+            return false;
+        }
+        return true;
+    }
+
+    public void onError(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ShowError.onError(AddEntryActivity.this, message, "RETRY", new BottomDialog.ButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull BottomDialog bottomDialog) {
+                        doPrint(entry);
+                    }
+                }, "CANCEL", new BottomDialog.ButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull BottomDialog bottomDialog) {
+                        //startActivity(new Intent(AddEntryActivity.this, AddEntryActivity.class));
+                        //finish();
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void onConnectionFailed() {
+        OnDetectDeviceListener onDetectDeviceListener = new OnDetectDeviceListener() {
+            int x = 0;
+
+            @Override
+            public void onDetectDevice(DeviceInfo deviceInfo) {
+                tPrinter.setPrinterTarget(deviceInfo.getTarget());
+                doPrint(entry);
+            }
+
+            @Override
+            public void onDetectError() {
+                if (++x < 5)
+                    tPrinter.startDiscovery(this);
+                else
+                    onError("Searching stopped.");
+            }
+        };
+        tPrinter.startDiscovery(onDetectDeviceListener);
+    }
+
+    @Override
+    public void onPrinterReady(final String status) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(AddEntryActivity.this, "Ready to print", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                tPrinter.disconnect();
+            }
+        }).start();
+    }
+
     private boolean isValid(Entry entry) {
+        if (entry == null) return false;
         if (TextUtils.isEmpty(entry.getTransactionNumber())) {
             StyleableToast.makeText(this, "Please enter the transaction number.", Toast.LENGTH_SHORT, R.style.ErrorToast).show();
             return false;
@@ -200,36 +315,5 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
             return false;
         }
         return true;
-    }
-
-    private boolean runPrintReceiptSequence(Entry entry) {
-        if (!tPrinter.initializeObject()) {
-            return false;
-        }
-        if (!tPrinter.printReceipt(entry)) {
-            tPrinter.finalizeObject();
-            return false;
-        }
-        return true;
-    }
-
-    public void onError(String message) {
-
-    }
-
-    @Override
-    public void onClickedButton(RadioRealButton button, int position) {
-        Utils.hideKeyboard(this);
-    }
-
-    @Override
-    public void onPrinterConnected(String status) {
-        updateButtonState(true);
-        tPrinter.disconnectPrinter();
-    }
-
-    @Override
-    public void onPrintCompleted() {
-
     }
 }

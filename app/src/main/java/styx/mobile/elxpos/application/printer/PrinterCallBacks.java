@@ -5,9 +5,10 @@ package styx.mobile.elxpos.application.printer;
  */
 
 public interface PrinterCallBacks {
-    void onPrinterConnected(String status);
+    void onPrinterReady(String status);
 
-    void onError(String sendData);
+    void onError(String message);
 
-    void onPrintCompleted();
+    void onConnectionFailed();
+
 }
