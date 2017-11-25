@@ -384,11 +384,11 @@ public class TPrinter implements ReceiveListener {
     }
 
     public void startDiscovery(final DiscoverCallBacks discoverCallBacks) {
-        FilterOption mFilterOption = new FilterOption();
+        final FilterOption mFilterOption = new FilterOption();
         mFilterOption.setDeviceType(Discovery.TYPE_PRINTER);
         mFilterOption.setEpsonFilter(Discovery.FILTER_NAME);
 
-        DiscoveryListener mDiscoveryListener = new DiscoveryListener() {
+        final DiscoveryListener mDiscoveryListener = new DiscoveryListener() {
             @Override
             public void onDiscovery(final DeviceInfo deviceInfo) {
                 activity.runOnUiThread(new Runnable() {
