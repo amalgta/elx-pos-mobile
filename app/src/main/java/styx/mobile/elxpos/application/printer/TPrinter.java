@@ -16,6 +16,7 @@ import com.epson.epos2.printer.PrinterStatusInfo;
 import com.epson.epos2.printer.ReceiveListener;
 
 import styx.mobile.elxpos.R;
+import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.application.Utils;
 import styx.mobile.elxpos.model.Entry;
 
@@ -42,63 +43,59 @@ public class TPrinter implements ReceiveListener {
     public boolean createReceiptData(Entry entry) {
         if (mPrinter == null) return false;
 
-        final int barcodeWidth = 6;
+        final int barcodeWidth = 2;
         final int barcodeHeight = 100;
 
         String method = "";
 
         try {
             method = "addTextAlign";
-            mPrinter.addTextAlign(Printer.ALIGN_LEFT);
+            mPrinter.addTextAlign(Printer.ALIGN_CENTER);
 
             mPrinter.addTextSize(2, 1);
-
             mPrinter.addTextFont(Printer.FONT_A);
-            mPrinter.addText("GIPL TOLL PLAZA - NH47.\n");
+            mPrinter.addText("GIPL TOLL PLAZA - NH47\n");
             mPrinter.addTextSize(1, 1);
 
-
+            mPrinter.addTextAlign(Printer.ALIGN_LEFT);
+            String format = ("     %1$s %2$s\n");
             StringBuilder textData = new StringBuilder();
-            textData.append("Thrishur-Edapally\n");
-            textData.append("===========================================\n");
-            textData.append("Tran. Number   :     " + entry.getTransactionNumber() + "\n");
-            textData.append("Date           :     " + Utils.getToday() + "\n");
-            textData.append("Lane           :     " + entry.getLane() + "\n");
-            textData.append("Operator       :     " + "cksgh" + "\n");
-            textData.append("Vehicle Class  :     " + entry.getVehicleClass() + "\n");
-            textData.append("Payment Method :     " + entry.getPaymentMethod() + "\n");
+            textData.append("     Thrishur-Edapally\n");
+            textData.append("     ===========================================\n");
+            textData.append(String.format(format, "Tran. Number    :", entry.getTransactionNumber()));
+            textData.append(String.format(format, "Date            :", Utils.getToday()));
+            textData.append(String.format(format, "Lane            :", entry.getLane()));
+            textData.append(String.format(format, "Operator        :", "cksgh"));
+            textData.append(String.format(format, "Vehicle Class   :", entry.getVehicleClass()));
+            textData.append(String.format(format, "Payment Method  :", entry.getPaymentMethod()));
+            textData.append(String.format(format, "Pass Type       :", entry.getPassType()));
+            textData.append(String.format(format, "Expiry          :", Utils.getTomorrow()));
+            textData.append(String.format(format, "Pass Type       :", entry.getPassType()));
+            textData.append(String.format(format, "Reg.No          :", "3820"));
+            textData.append(String.format(format, "Amount Paid     :", "Rs. " + entry.getAmountPaid()));
+            textData.append(String.format(format, "", entry.getColumnNumber()));
+            textData.append("     ===========================================\n");
+
+            method = "addText";
             mPrinter.addText(textData.toString());
 
+            textData.delete(0, textData.length());
+            mPrinter.addTextAlign(Printer.ALIGN_CENTER);
 
-            mPrinter.addText("Pass Type      :     " + entry.getPassType() + "\n");
-
-
-            textData = new StringBuilder();
-            textData.append("Expiry         :     " + Utils.getTomorrow() + "\n");
-            mPrinter.addText(textData.toString());
-
-            mPrinter.addText("Pass Type      :     " + entry.getPassType() + "\n");
-            mPrinter.addText("Reg.No         :     " + "3820" + "\n");
-            mPrinter.addText("Amount Paid    :     Rs." + entry.getAmountPaid() + "\n");
-
-            textData = new StringBuilder();
-            textData.append(entry.getColumnNumber() + "\n");
-            textData.append("===========================================\n");
-            textData.append("GIPL WISHES YOU" + "\n");
-            textData.append("*HAPPY JOURNEY*. Free Services" + "\n");
-            textData.append("Ambulance\\Crane\\Route Patrol" + "\n");
-            textData.append("Toll Plaza at Km-278.00" + "\n");
-            textData.append("Emergency Contact-8129255666" + "\n");
-            textData.append("(From Km-270.00 ro 342.00)" + "\n");
-            mPrinter.addText(textData.toString());
-
+            textData.append(String.format(format, "", "GIPL WISHES YOU"));
+            textData.append(String.format(format, "", "*HAPPY JOURNEY*. Free Services"));
+            textData.append(String.format(format, "", "Ambulance\\Crane\\Route Patrol"));
+            textData.append(String.format(format, "", "Toll Plaza at Km-278.00"));
+            String contactNumber = Utils.getPersistData(activity, Constants.DataBaseStorageKeys.ContactNumber);
+            textData.append(String.format(format, "Emergency Contact-", TextUtils.isEmpty(contactNumber) ? "" : contactNumber));
+            textData.append(String.format(format, "", "(From Km-270.00 to 342.00)"));
 
             method = "addText";
             mPrinter.addText(textData.toString());
             textData.delete(0, textData.length());
 
             method = "addBarcode";
-            mPrinter.addBarcode(entry.getColumnNumber(),
+            mPrinter.addBarcode(entry.getColumnNumber().length() > 6 ? entry.getColumnNumber().substring(0, 7) : entry.getColumnNumber(),
                     Printer.BARCODE_CODE39,
                     Printer.HRI_BELOW,
                     Printer.FONT_A,

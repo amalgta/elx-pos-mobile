@@ -24,6 +24,6 @@ public class Constants {
     }
 
     public interface DateFormat {
-        String PrintDate = "d-mmm-yyyy h:m:s a";
+        String PrintDate = "d-MMM-yyyy h:m:ss a";
     }
 }
