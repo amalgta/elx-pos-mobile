@@ -13,7 +13,7 @@ import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.application.Utils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class PreferencesActivity extends AppCompatActivity implements View.OnClickListener{
+public class PreferencesActivity extends AppCompatActivity implements View.OnClickListener {
 
     private View buttonSave;
     private EditText inputPhoneNumber;
@@ -35,7 +35,7 @@ public class PreferencesActivity extends AppCompatActivity implements View.OnCli
     private void bindUI() {
         String contactNumber = Utils.getPersistData(this, Constants.DataBaseStorageKeys.ContactNumber);
         inputPhoneNumber.setText(TextUtils.isEmpty(contactNumber) ? "" : contactNumber);
-        inputPhoneNumber.setSelection(contactNumber.length());
+        inputPhoneNumber.setSelection(inputPhoneNumber.getText().length());
     }
 
     @Override

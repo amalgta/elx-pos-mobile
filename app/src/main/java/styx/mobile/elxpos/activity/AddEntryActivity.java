@@ -280,35 +280,4 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                 .show();
     }
 
-    public class BackgroundTask extends AsyncTask<String, Integer, String > {
-        private ProgressDialog mProgressDialog;
-        int progress;
-        public BackgroundTask() {
-            mProgressDialog = new ProgressDialog(AddEntryActivity.this);
-            mProgressDialog.setMax(100);
-            mProgressDialog.setProgress(0);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            mProgressDialog =ProgressDialog.show(AddEntryActivity.this, "", "Loading...",true,false);
-            super.onPreExecute();
-        }
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            setProgress(values[0]);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            return "";
-        }
-        @Override
-        protected void onPostExecute(String  result) {
-            Toast.makeText(AddEntryActivity.this, result, Toast.LENGTH_LONG).show();
-            mProgressDialog.dismiss();
-            super.onPostExecute(result);
-        }
-    }
 }
