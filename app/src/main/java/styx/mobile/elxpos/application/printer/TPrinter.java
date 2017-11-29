@@ -3,6 +3,7 @@ package styx.mobile.elxpos.application.printer;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -415,6 +416,28 @@ public class TPrinter implements ReceiveListener {
                     break;
                 }
             }
+        }
+    }
+
+    private class DownloadFilesTask extends AsyncTask<Void, Integer, Long> {
+        protected Long doInBackground(Void... voids) {
+            int count = urls.length;
+            long totalSize = 0;
+            for (int i = 0; i < count; i++) {
+                totalSize += Downloader.downloadFile(urls[i]);
+                publishProgress((int) ((i / (float) count) * 100));
+                // Escape early if cancel() is called
+                if (isCancelled()) break;
+            }
+            return totalSize;
+        }
+
+        protected void onPreExecute() {
+
+        }
+
+        protected void onPostExecute(Long result) {
+            showDialog("Downloaded " + result + " bytes");
         }
     }
 
