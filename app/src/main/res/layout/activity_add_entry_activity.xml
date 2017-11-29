@@ -326,7 +326,7 @@
                                 android:layout_height="wrap_content"
                                 app:rrb_ripple="true"
                                 app:rrb_rippleColor="@color/black_1"
-                                app:rrb_text="Multiple"
+                                app:rrb_text="MULTIPLE"
                                 app:rrb_textColor="@color/black" />
 
                             <co.ceryle.radiorealbutton.RadioRealButton
@@ -335,7 +335,7 @@
                                 android:layout_height="wrap_content"
                                 app:rrb_ripple="true"
                                 app:rrb_rippleColor="@color/black_1"
-                                app:rrb_text="Single"
+                                app:rrb_text="SINGLE"
                                 app:rrb_textColor="@color/black" />
                         </co.ceryle.radiorealbutton.RadioRealButtonGroup>
                     </LinearLayout>
@@ -470,13 +470,13 @@
         android:id="@+id/buttonSave"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:animateLayoutChanges="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/margin_default"
         android:layout_marginLeft="@dimen/margin_default"
         android:layout_marginRight="@dimen/margin_default"
         android:layout_marginStart="@dimen/margin_default"
         android:alpha=".9"
+        android:animateLayoutChanges="true"
         android:clickable="true"
         android:focusable="true">
 

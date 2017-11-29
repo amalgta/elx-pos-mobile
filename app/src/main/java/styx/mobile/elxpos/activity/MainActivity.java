@@ -20,7 +20,7 @@ import styx.mobile.elxpos.model.Entry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    View buttonConfigurePrinter, buttonViewLastReceipt, buttonAddEntry,buttonSettings;
+    View buttonConfigurePrinter, buttonViewLastReceipt, buttonAddEntry, buttonSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         buttonConfigurePrinter = findViewById(R.id.buttonConfigurePrinter);
         buttonViewLastReceipt = findViewById(R.id.buttonViewLastReceipt);
-        buttonSettings= findViewById(R.id.buttonSettings);
+        buttonSettings = findViewById(R.id.buttonSettings);
         buttonAddEntry = findViewById(R.id.buttonAddEntry);
 
         Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.blue));
@@ -69,11 +69,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     ShowError.onError(this,
                             "No saved receipts. Please create one.",
-                            "Dismiss",
+                            "CREATE",
                             new BottomDialog.ButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull BottomDialog dialog) {
                                     startActivity(new Intent(MainActivity.this, AddEntryActivity.class));
+                                }
+                            }, "DISMISS",
+                            new BottomDialog.ButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull BottomDialog dialog) {
                                 }
                             }
                     );

@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.epson.epos2.discovery.DeviceInfo;
+import com.epson.eposprint.Builder;
+import com.epson.eposprint.Print;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.gson.Gson;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
@@ -27,6 +29,9 @@ import styx.mobile.elxpos.application.printer.DiscoverCallBacks;
 import styx.mobile.elxpos.application.printer.PrinterCallBacks;
 import styx.mobile.elxpos.application.printer.TPrinter;
 import styx.mobile.elxpos.model.Entry;
+
+import com.epson.eposprint.EposException;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AddEntryActivity extends AppCompatActivity implements PrinterCallBacks, View.OnClickListener, RadioRealButtonGroup.OnClickedButtonListener {
@@ -189,9 +194,10 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                 public void onDeviceDetected(DeviceInfo deviceInfo) {
                     tPrinter.setTarget(deviceInfo.getTarget());
                     showProgress("Printing on progress.");
+
                     if (!tPrinter.runPrintReceiptSequence(entry)) {
                         //TODO
-                    }else {
+                    } else {
                         setEntry(new Entry());
                     }
                     stopProgress();
