@@ -16,6 +16,7 @@ import com.epson.epos2.printer.Printer;
 import com.epson.epos2.printer.PrinterStatusInfo;
 import com.epson.epos2.printer.ReceiveListener;
 import com.epson.eposprint.Builder;
+import com.epson.eposprint.EposException;
 
 import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.application.Constants;
@@ -46,7 +47,7 @@ public class TPrinter implements ReceiveListener {
         if (mPrinter == null) return false;
 
         String contactNumber = Utils.getPersistData(activity, Constants.DataBaseStorageKeys.ContactNumber);
-        String format = ("   %1$s %2$s\n");
+        String format = ("%1$s %2$s\n");
 
         final int barcodeWidth = 2;
         final int barcodeHeight = 100;
@@ -57,11 +58,11 @@ public class TPrinter implements ReceiveListener {
             method = "addTextAlign";
             mPrinter.addTextAlign(Printer.ALIGN_LEFT);
 
-            mPrinter.addTextFont(Printer.FONT_C);
-
+            mPrinter.addTextFont(Printer.FONT_B);
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
-            mPrinter.addText(String.format(format, "GIPL TOLL PLAZA - NH47", ""));
+            mPrinter.addText(String.format(format, "GIPL TOLL PLAZA - NH47.", ""));
             mPrinter.addText(String.format(format, "Thrishur-Edapally", ""));
+            mPrinter.addTextFont(Printer.FONT_A);
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
             mPrinter.addText(String.format(format, "===========================================", ""));
             mPrinter.addText(String.format(format, "Tran. Number    :", entry.getTransactionNumber()));
@@ -70,31 +71,35 @@ public class TPrinter implements ReceiveListener {
             mPrinter.addText(String.format(format, "Operator        :", "cksgh"));
             mPrinter.addText(String.format(format, "Vehicle Class   :", entry.getVehicleClass()));
             mPrinter.addText(String.format(format, "Payment Method  :", entry.getPaymentMethod()));
+
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
             mPrinter.addText(String.format(format, "Pass Type       :", entry.getPassType()));
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
+
             mPrinter.addText(String.format(format, "Expiry          :", Utils.getTomorrow()));
+
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
             mPrinter.addText(String.format(format, "Reg.No          :", "3820"));
-            mPrinter.addText(String.format(format, "Amount Paid     :", "Rs. " + entry.getAmountPaid()));
+            mPrinter.addText(String.format(format, "Amount Paid     :", "Rs." + entry.getAmountPaid()));
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
+
             mPrinter.addText(String.format(format, entry.getColumnNumber(), ""));
             mPrinter.addText(String.format(format, "===========================================", ""));
-            mPrinter.addText(String.format(format, "GIPL WISHES YOU",""));
-            mPrinter.addText(String.format(format, "*HAPPY JOURNEY*. Free Services",""));
-            mPrinter.addText(String.format(format, "Ambulance\\Crane\\Route Patrol",""));
-            mPrinter.addText(String.format(format, "Toll Plaza at Km-278.00",""));
+            mPrinter.addText(String.format(format, "GIPL WISHES YOU", ""));
+            mPrinter.addText(String.format(format, "*HAPPY JOURNEY*. Free Services", ""));
+            mPrinter.addText(String.format(format, "Ambulance\\Crane\\Route Patrol", ""));
+            mPrinter.addText(String.format(format, "Toll Plaza at Km-278.00", ""));
             mPrinter.addText(String.format(format, "Emergency Contact-", TextUtils.isEmpty(contactNumber) ? "" : contactNumber));
-            mPrinter.addText(String.format(format, "(From Km-270.00 to 342.00)",""));
+            mPrinter.addText(String.format(format, "(From Km-270.00 to 342.00)", ""));
 
             mPrinter.addTextAlign(Printer.ALIGN_CENTER);
             method = "addBarcode";
-            mPrinter.addBarcode(entry.getColumnNumber().length() > 6 ? entry.getColumnNumber().substring(0, 7) : entry.getColumnNumber(),
-                    Printer.BARCODE_CODE39,
-                    Printer.HRI_BELOW,
+            mPrinter.addBarcode(Utils.leadingZeros(entry.getColumnNumber(), 24), Builder.BARCODE_ITF,
+                    Builder.HRI_BELOW,
                     Printer.FONT_A,
-                    barcodeWidth,
-                    barcodeHeight);
+                    barcodeWidth, barcodeHeight);
+
+            mPrinter.addText("\n");
 
             method = "addCut";
             mPrinter.addCut(Printer.CUT_FEED);
