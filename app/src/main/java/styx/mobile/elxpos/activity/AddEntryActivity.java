@@ -1,8 +1,6 @@
 package styx.mobile.elxpos.activity;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -14,8 +12,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.epson.epos2.discovery.DeviceInfo;
-import com.epson.eposprint.Builder;
-import com.epson.eposprint.Print;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.gson.Gson;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
@@ -29,9 +25,6 @@ import styx.mobile.elxpos.application.printer.DiscoverCallBacks;
 import styx.mobile.elxpos.application.printer.PrinterCallBacks;
 import styx.mobile.elxpos.application.printer.TPrinter;
 import styx.mobile.elxpos.model.Entry;
-
-import com.epson.eposprint.EposException;
-
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AddEntryActivity extends AppCompatActivity implements PrinterCallBacks, View.OnClickListener, RadioRealButtonGroup.OnClickedButtonListener {
@@ -79,6 +72,12 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         }
 
         tPrinter = new TPrinter(this, this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tPrinter.disconnectPrinter();
     }
 
     private void setEntry(Entry entry) {
@@ -188,23 +187,31 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         Utils.persistData(AddEntryActivity.this, Constants.DataBaseStorageKeys.LastPrintedReceipt, new Gson().toJson(entry));
 
         if (isValid(entry)) {
-            showProgress("Scanning for device.");
-            tPrinter.startDiscovery(new DiscoverCallBacks() {
+            new Thread(new Runnable() {
                 @Override
-                public void onDeviceDetected(DeviceInfo deviceInfo) {
-                    tPrinter.setTarget(deviceInfo.getTarget());
-                    showProgress("Printing on progress.");
-
-                    if (!tPrinter.runPrintReceiptSequence(entry)) {
-                        //TODO
-                    } else {
-                        setEntry(new Entry());
-                    }
-                    stopProgress();
+                public void run() {
+                    showProgress("Scanning for device.");
+//                    if (!TextUtils.isEmpty(tPrinter.getTarget())) {
+//                        showProgress("Printing on progress.");
+//                        tPrinter.runPrintReceiptSequence(entry);
+//                        stopProgress();
+//                    } else {
+                    tPrinter.startDiscovery(new DiscoverCallBacks() {
+                        @Override
+                        public void onDeviceDetected(DeviceInfo deviceInfo) {
+                            tPrinter.setTarget(deviceInfo.getTarget());
+                            showProgress("Printing on progress.");
+                            tPrinter.runPrintReceiptSequence(entry);
+                            stopProgress();
+                        }
+//                        });
+//                    }
+                    });
                 }
-            });
-        }
+            }
+            ).run();
 
+        }
     }
 
     private boolean isValid(Entry entry) {
@@ -247,6 +254,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
     @Override
     public void onPrinterReady(String status) {
         stopProgress();
+        setEntry(new Entry());
     }
 
     @Override

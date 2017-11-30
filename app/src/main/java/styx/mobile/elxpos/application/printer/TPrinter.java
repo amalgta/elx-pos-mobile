@@ -28,7 +28,7 @@ import styx.mobile.elxpos.model.Entry;
  */
 
 public class TPrinter implements ReceiveListener {
-    public static String TAG = "TPRINTER";
+    public static String TAG = "TPrinter";
     private Printer mPrinter = null;
     private Activity activity;
     private String target;
@@ -44,10 +44,12 @@ public class TPrinter implements ReceiveListener {
     }
 
     public boolean createReceiptData(Entry entry) {
+        boolean isDebug = true;
+
         if (mPrinter == null) return false;
 
         String contactNumber = Utils.getPersistData(activity, Constants.DataBaseStorageKeys.ContactNumber);
-        String format = ("%1$s %2$s\n");
+        String format = ("    %1$s %2$s\n");
 
         final int barcodeWidth = 2;
         final int barcodeHeight = 100;
@@ -57,13 +59,13 @@ public class TPrinter implements ReceiveListener {
         try {
             method = "addTextAlign";
             mPrinter.addTextAlign(Printer.ALIGN_LEFT);
+            mPrinter.addTextFont(Printer.FONT_A);
 
-            mPrinter.addTextFont(Printer.FONT_B);
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
             mPrinter.addText(String.format(format, "GIPL TOLL PLAZA - NH47.", ""));
             mPrinter.addText(String.format(format, "Thrishur-Edapally", ""));
-            mPrinter.addTextFont(Printer.FONT_A);
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
+
             mPrinter.addText(String.format(format, "===========================================", ""));
             mPrinter.addText(String.format(format, "Tran. Number    :", entry.getTransactionNumber()));
             mPrinter.addText(String.format(format, "Date            :", Utils.getToday()));
@@ -72,38 +74,40 @@ public class TPrinter implements ReceiveListener {
             mPrinter.addText(String.format(format, "Vehicle Class   :", entry.getVehicleClass()));
             mPrinter.addText(String.format(format, "Payment Method  :", entry.getPaymentMethod()));
 
-            mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
-            mPrinter.addText(String.format(format, "Pass Type       :", entry.getPassType()));
-            mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
+            if (!isDebug) {
 
-            mPrinter.addText(String.format(format, "Expiry          :", Utils.getTomorrow()));
+                mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
+                mPrinter.addText(String.format(format, "Pass Type       :", entry.getPassType()));
+                mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
 
-            mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
-            mPrinter.addText(String.format(format, "Reg.No          :", "3820"));
-            mPrinter.addText(String.format(format, "Amount Paid     :", "Rs." + entry.getAmountPaid()));
-            mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
+                mPrinter.addText(String.format(format, "Expiry          :", Utils.getTomorrow()));
 
-            mPrinter.addText(String.format(format, entry.getColumnNumber(), ""));
-            mPrinter.addText(String.format(format, "===========================================", ""));
-            mPrinter.addText(String.format(format, "GIPL WISHES YOU", ""));
-            mPrinter.addText(String.format(format, "*HAPPY JOURNEY*. Free Services", ""));
-            mPrinter.addText(String.format(format, "Ambulance\\Crane\\Route Patrol", ""));
-            mPrinter.addText(String.format(format, "Toll Plaza at Km-278.00", ""));
-            mPrinter.addText(String.format(format, "Emergency Contact-", TextUtils.isEmpty(contactNumber) ? "" : contactNumber));
-            mPrinter.addText(String.format(format, "(From Km-270.00 to 342.00)", ""));
+                mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
+                mPrinter.addText(String.format(format, "Reg.No          :", "3820"));
+                mPrinter.addText(String.format(format, "Amount Paid     :", "Rs." + entry.getAmountPaid()));
+                mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
 
-            mPrinter.addTextAlign(Printer.ALIGN_CENTER);
-            method = "addBarcode";
-            mPrinter.addBarcode(Utils.leadingZeros(entry.getColumnNumber(), 24), Builder.BARCODE_ITF,
-                    Builder.HRI_BELOW,
-                    Printer.FONT_A,
-                    barcodeWidth, barcodeHeight);
+                mPrinter.addText(String.format(format, entry.getColumnNumber(), ""));
+                mPrinter.addText(String.format(format, "===========================================", ""));
+                mPrinter.addText(String.format(format, "GIPL WISHES YOU", ""));
+                mPrinter.addText(String.format(format, "*HAPPY JOURNEY*. Free Services", ""));
+                mPrinter.addText(String.format(format, "Ambulance\\Crane\\Route Patrol", ""));
+                mPrinter.addText(String.format(format, "Toll Plaza at Km-278.00", ""));
+                mPrinter.addText(String.format(format, "Emergency Contact-", TextUtils.isEmpty(contactNumber) ? "" : contactNumber));
+                mPrinter.addText(String.format(format, "(From Km-270.00 to 342.00)", ""));
 
-            mPrinter.addText("\n");
+                mPrinter.addTextAlign(Printer.ALIGN_CENTER);
+                method = "addBarcode";
+                mPrinter.addBarcode(Utils.leadingZeros(entry.getColumnNumber(), 24), Builder.BARCODE_ITF,
+                        Builder.HRI_BELOW,
+                        Printer.FONT_A,
+                        barcodeWidth, barcodeHeight);
 
-            method = "addCut";
-            mPrinter.addCut(Printer.CUT_FEED);
+                mPrinter.addText("\n");
 
+                method = "addCut";
+                mPrinter.addCut(Printer.CUT_FEED);
+            }
         } catch (Exception e) {
             Log.e(TAG, method + ":" + e.toString());
             return false;
@@ -140,10 +144,10 @@ public class TPrinter implements ReceiveListener {
 
         PrinterStatusInfo status = mPrinter.getStatus();
 
-        dispPrinterWarnings(status);
+        PrinterUtils.dispPrinterWarnings(status);
 
         if (!isPrintable(status)) {
-            printerCallBacks.onMessage(makeErrorMessage(activity, status));
+            printerCallBacks.onMessage(PrinterUtils.makeErrorMessage(activity, status));
             try {
                 mPrinter.disconnect();
             } catch (Exception ex) {
@@ -214,10 +218,10 @@ public class TPrinter implements ReceiveListener {
             printerCallBacks.onError(e, "beginTransaction");
         }
 
-        if (isBeginTransaction == false) {
+        if (!isBeginTransaction) {
             try {
                 mPrinter.disconnect();
-            } catch (Epos2Exception e) {
+            } catch (Exception e) {
                 // Do nothing
                 return false;
             }
@@ -272,75 +276,6 @@ public class TPrinter implements ReceiveListener {
         return true;
     }
 
-    public static String makeErrorMessage(Activity activity, PrinterStatusInfo status) {
-        String msg = "";
-
-        if (status.getOnline() == Printer.FALSE) {
-            msg += activity.getString(R.string.handlingmsg_err_offline);
-        }
-        if (status.getConnection() == Printer.FALSE) {
-            msg += activity.getString(R.string.handlingmsg_err_no_response);
-        }
-        if (status.getCoverOpen() == Printer.TRUE) {
-            msg += activity.getString(R.string.handlingmsg_err_cover_open);
-        }
-        if (status.getPaper() == Printer.PAPER_EMPTY) {
-            msg += activity.getString(R.string.handlingmsg_err_receipt_end);
-        }
-        if (status.getPaperFeed() == Printer.TRUE || status.getPanelSwitch() == Printer.SWITCH_ON) {
-            msg += activity.getString(R.string.handlingmsg_err_paper_feed);
-        }
-        if (status.getErrorStatus() == Printer.MECHANICAL_ERR || status.getErrorStatus() == Printer.AUTOCUTTER_ERR) {
-            msg += activity.getString(R.string.handlingmsg_err_autocutter);
-            msg += activity.getString(R.string.handlingmsg_err_need_recover);
-        }
-        if (status.getErrorStatus() == Printer.UNRECOVER_ERR) {
-            msg += activity.getString(R.string.handlingmsg_err_unrecover);
-        }
-        if (status.getErrorStatus() == Printer.AUTORECOVER_ERR) {
-            if (status.getAutoRecoverError() == Printer.HEAD_OVERHEAT) {
-                msg += activity.getString(R.string.handlingmsg_err_overheat);
-                msg += activity.getString(R.string.handlingmsg_err_head);
-            }
-            if (status.getAutoRecoverError() == Printer.MOTOR_OVERHEAT) {
-                msg += activity.getString(R.string.handlingmsg_err_overheat);
-                msg += activity.getString(R.string.handlingmsg_err_motor);
-            }
-            if (status.getAutoRecoverError() == Printer.BATTERY_OVERHEAT) {
-                msg += activity.getString(R.string.handlingmsg_err_overheat);
-                msg += activity.getString(R.string.handlingmsg_err_battery);
-            }
-            if (status.getAutoRecoverError() == Printer.WRONG_PAPER) {
-                msg += activity.getString(R.string.handlingmsg_err_wrong_paper);
-            }
-        }
-        if (status.getBatteryLevel() == Printer.BATTERY_LEVEL_0) {
-            msg += activity.getString(R.string.handlingmsg_err_battery_real_end);
-        }
-
-        return msg;
-    }
-
-    public void dispPrinterWarnings(PrinterStatusInfo status) {
-        /*
-        EditText edtWarnings = (EditText) findViewById(R.id.edtWarnings);
-        String warningsMsg = "";
-
-        if (status == null) {
-            return;
-        }
-
-        if (status.getPaper() == Printer.PAPER_NEAR_END) {
-            warningsMsg += getString(R.string.handlingmsg_warn_receipt_near_end);
-        }
-
-        if (status.getBatteryLevel() == Printer.BATTERY_LEVEL_1) {
-            warningsMsg += getString(R.string.handlingmsg_warn_battery_near_end);
-        }
-
-        edtWarnings.setText(warningsMsg);
-        */
-    }
 
     @Override
     public void onPtrReceive(final Printer printerObj, final int code, final PrinterStatusInfo status, final String printJobId) {
@@ -348,9 +283,9 @@ public class TPrinter implements ReceiveListener {
             @Override
             public synchronized void run() {
                 //ShowMsg.showResult(code, makeErrorMessage(activity, status), activity);
-                String errMsg = makeErrorMessage(activity, status);
+                String errMsg = PrinterUtils.makeErrorMessage(activity, status);
 
-                String msg = "";
+                String msg;
                 if (errMsg.isEmpty()) {
                     msg = String.format(
                             "\t%s\n\t%s\n",
@@ -391,9 +326,14 @@ public class TPrinter implements ReceiveListener {
                     @Override
                     public synchronized void run() {
                         discoverCallBacks.onDeviceDetected(deviceInfo);
-                        stopDiscover();
                     }
                 });
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopDiscover();
+                    }
+                }).start();
             }
         };
 
@@ -417,18 +357,7 @@ public class TPrinter implements ReceiveListener {
         }
     }
 
-    private class DownloadFilesTask extends AsyncTask<Void, Integer, Long> {
-        protected Long doInBackground(Void... voids) {
-            long totalSize = 0;
-            return totalSize;
-        }
-
-        protected void onPreExecute() {
-
-        }
-
-        protected void onPostExecute(Long result) {
-
-        }
+    public String getTarget() {
+        return target;
     }
 }

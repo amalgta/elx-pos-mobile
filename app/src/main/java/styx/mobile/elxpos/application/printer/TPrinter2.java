@@ -223,7 +223,7 @@ public class TPrinter2 implements ReceiveListener {
                     public void run() {
                         stopDiscovery();
                     }
-                });
+                }).start();
             }
         };
         try {
