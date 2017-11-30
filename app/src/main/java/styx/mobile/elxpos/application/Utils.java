@@ -62,12 +62,14 @@ public class Utils {
     public static void hideKeyboard1(Activity activity) {
         activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
-    public static void hideKeyboard(View view){
-        InputMethodManager imm = (InputMethodManager)view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+    public static void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
     public static void hideKeyboard(Activity activity) {
         View view = activity.getCurrentFocus();
         if (view != null) {
@@ -76,5 +78,10 @@ public class Utils {
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         }
+    }
+
+    public static String leadingZeros(String s, int length) {
+        if (s.length() >= length) return s;
+        else return String.format("%0" + (length - s.length()) + "d%s", 0, s);
     }
 }
