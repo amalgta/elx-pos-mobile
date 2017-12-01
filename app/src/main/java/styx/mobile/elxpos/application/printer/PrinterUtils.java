@@ -2,19 +2,27 @@ package styx.mobile.elxpos.application.printer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.epson.epos2.Epos2CallbackCode;
 import com.epson.epos2.printer.Printer;
 import com.epson.epos2.printer.PrinterStatusInfo;
+import com.epson.eposprint.Builder;
 
 import styx.mobile.elxpos.R;
+import styx.mobile.elxpos.application.Constants;
+import styx.mobile.elxpos.application.Utils;
+import styx.mobile.elxpos.model.Entry;
 
 /**
  * Created by amalg on 24-11-2017.
  */
 
-public class PrinterUtils {
-    public static String makeErrorMessage(Context context, PrinterStatusInfo status) {
+class PrinterUtils {
+    public static final String TAG = "PrinterUtils";
+
+    static String makeErrorMessage(Context context, PrinterStatusInfo status) {
         String msg = "";
 
         if (status.getOnline() == Printer.FALSE) {
@@ -62,7 +70,8 @@ public class PrinterUtils {
 
         return msg;
     }
-    public static String getCodeText(int state) {
+
+    static String getCodeText(int state) {
         String return_text = "";
         switch (state) {
             case Epos2CallbackCode.CODE_SUCCESS:
@@ -125,7 +134,8 @@ public class PrinterUtils {
         }
         return return_text;
     }
-    public static String makeWarningMessage(Context context, PrinterStatusInfo status) {
+
+    static String makeWarningMessage(Context context, PrinterStatusInfo status) {
         String warningsMsg = "";
         if (status == null) {
             return "Invalid status";
@@ -141,7 +151,8 @@ public class PrinterUtils {
 
         return warningsMsg;
     }
-    public static String makeErrorMessage(Activity activity, PrinterStatusInfo status) {
+
+    static String makeErrorMessage(Activity activity, PrinterStatusInfo status) {
         String msg = "";
 
         if (status.getOnline() == Printer.FALSE) {
@@ -190,9 +201,8 @@ public class PrinterUtils {
         return msg;
     }
 
-    public static void dispPrinterWarnings(PrinterStatusInfo status) {
-        /*
-        EditText edtWarnings = (EditText) findViewById(R.id.edtWarnings);
+    static void displayPrinterStatus(Context context, PrinterStatusInfo status) {
+
         String warningsMsg = "";
 
         if (status == null) {
@@ -200,14 +210,102 @@ public class PrinterUtils {
         }
 
         if (status.getPaper() == Printer.PAPER_NEAR_END) {
-            warningsMsg += getString(R.string.handlingmsg_warn_receipt_near_end);
+            warningsMsg += context.getString(R.string.handlingmsg_warn_receipt_near_end);
         }
 
         if (status.getBatteryLevel() == Printer.BATTERY_LEVEL_1) {
-            warningsMsg += getString(R.string.handlingmsg_warn_battery_near_end);
+            warningsMsg += context.getString(R.string.handlingmsg_warn_battery_near_end);
         }
 
-        edtWarnings.setText(warningsMsg);
-        */
+        Log.e(TAG, warningsMsg);
+
+    }
+
+    static boolean isPrintable(PrinterStatusInfo status) {
+        if (status == null) {
+            return false;
+        }
+
+        if (status.getConnection() == Printer.FALSE) {
+            return false;
+        } else if (status.getOnline() == Printer.FALSE) {
+            return false;
+        } else {
+            ;//print available
+        }
+
+        return true;
+    }
+
+    static boolean generateReceiptData(Context activity, Printer mPrinter, Entry entry) {
+        boolean isDebug = false;
+
+        if (mPrinter == null) return false;
+
+        String contactNumber = Utils.getPersistData(activity, Constants.DataBaseStorageKeys.ContactNumber);
+        String format = ("    %1$s %2$s\n");
+
+        final int barcodeWidth = 2;
+        final int barcodeHeight = 100;
+
+        String method = "";
+
+        try {
+            method = "addTextAlign";
+            mPrinter.addTextAlign(Printer.ALIGN_LEFT);
+            mPrinter.addTextFont(Printer.FONT_A);
+
+            mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
+            mPrinter.addText(String.format(format, "GIPL TOLL PLAZA - NH47.", ""));
+            mPrinter.addText(String.format(format, "Thrishur-Edapally", ""));
+            mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
+
+            mPrinter.addText(String.format(format, "===========================================", ""));
+            mPrinter.addText(String.format(format, "Tran. Number    :", entry.getTransactionNumber()));
+            mPrinter.addText(String.format(format, "Date            :", Utils.getToday()));
+            mPrinter.addText(String.format(format, "Lane            :", entry.getLane()));
+            mPrinter.addText(String.format(format, "Operator        :", "cksgh"));
+            mPrinter.addText(String.format(format, "Vehicle Class   :", entry.getVehicleClass()));
+            mPrinter.addText(String.format(format, "Payment Method  :", entry.getPaymentMethod()));
+
+            if (!isDebug) {
+
+                mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
+                mPrinter.addText(String.format(format, "Pass Type       :", entry.getPassType()));
+                mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
+
+                mPrinter.addText(String.format(format, "Expiry          :", Utils.getTomorrow()));
+
+                mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
+                mPrinter.addText(String.format(format, "Reg.No          :", "3820"));
+                mPrinter.addText(String.format(format, "Amount Paid     :", "Rs." + entry.getAmountPaid()));
+                mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
+
+                mPrinter.addText(String.format(format, entry.getColumnNumber(), ""));
+                mPrinter.addText(String.format(format, "===========================================", ""));
+                mPrinter.addText(String.format(format, "GIPL WISHES YOU", ""));
+                mPrinter.addText(String.format(format, "*HAPPY JOURNEY*. Free Services", ""));
+                mPrinter.addText(String.format(format, "Ambulance\\Crane\\Route Patrol", ""));
+                mPrinter.addText(String.format(format, "Toll Plaza at Km-278.00", ""));
+                mPrinter.addText(String.format(format, "Emergency Contact-", TextUtils.isEmpty(contactNumber) ? "" : contactNumber));
+                mPrinter.addText(String.format(format, "(From Km-270.00 to 342.00)", ""));
+
+                mPrinter.addTextAlign(Printer.ALIGN_CENTER);
+                method = "addBarcode";
+                mPrinter.addBarcode(Utils.leadingZeros(entry.getColumnNumber(), 24), Builder.BARCODE_ITF,
+                        Builder.HRI_BELOW,
+                        Printer.FONT_A,
+                        barcodeWidth, barcodeHeight);
+
+                mPrinter.addText("\n");
+
+                method = "addCut";
+                mPrinter.addCut(Printer.CUT_FEED);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, method + ":" + e.toString());
+            return false;
+        }
+        return true;
     }
 }

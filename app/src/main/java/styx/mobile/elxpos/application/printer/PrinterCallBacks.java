@@ -10,4 +10,8 @@ public interface PrinterCallBacks {
     void onError(Exception errorMessage, String message);
 
     void onMessage(String message);
+
+    void startProgress(String message);
+
+    void stopProgress();
 }

@@ -29,7 +29,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AddEntryActivity extends AppCompatActivity implements PrinterCallBacks, View.OnClickListener, RadioRealButtonGroup.OnClickedButtonListener {
 
-    private View buttonCapture;
+    private View buttonSave;
     private EditText inputTransactionNumber, inputRegistrationNumber, inputColumnNumber, inputAmountPaid;
     private RadioRealButtonGroup radioGroupVehicleClass, radioGroupPaymentMethod, radioGroupPassType, radioGroupLane;
     private Entry entry;
@@ -43,7 +43,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
 
         Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.blue));
 
-        buttonCapture = findViewById(R.id.buttonSave);
+        buttonSave = findViewById(R.id.buttonSave);
         inputTransactionNumber = findViewById(R.id.inputTransactionNumber);
         inputRegistrationNumber = findViewById(R.id.inputRegistrationNumber);
         inputColumnNumber = findViewById(R.id.inputColumnNumber);
@@ -53,7 +53,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         radioGroupPassType = findViewById(R.id.radioGroupPassType);
         radioGroupLane = findViewById(R.id.radioGroupLane);
 
-        buttonCapture.setOnClickListener(this);
+        buttonSave.setOnClickListener(this);
         radioGroupVehicleClass.setOnClickedButtonListener(this);
         radioGroupPaymentMethod.setOnClickedButtonListener(this);
         radioGroupPassType.setOnClickedButtonListener(this);
@@ -151,22 +151,6 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         outState.putParcelable(Constants.BundleKeys.PersistedEntry, entry);
     }
 
-    private void showProgress(String message) {
-        stopProgress();
-        materialDialog = new MaterialDialog.Builder(this)
-                //.title("Loading")
-                .content(message)
-                .cancelable(false)
-                .progress(true, 0)
-                .show();
-    }
-
-    private void stopProgress() {
-        if (materialDialog == null) return;
-        materialDialog.dismiss();
-        materialDialog = null;
-    }
-
     @Override
     public void onClickedButton(RadioRealButton button, int position) {
         Utils.hideKeyboard(this);
@@ -187,23 +171,20 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         Utils.persistData(AddEntryActivity.this, Constants.DataBaseStorageKeys.LastPrintedReceipt, new Gson().toJson(entry));
 
         if (isValid(entry)) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    showProgress("Scanning for device.");
-                    tPrinter.startDiscovery(new DiscoverCallBacks() {
-                        @Override
-                        public void onDeviceDetected(DeviceInfo deviceInfo) {
-                            tPrinter.setTarget(deviceInfo.getTarget());
-                            showProgress("Printing on progress.");
-                            tPrinter.runPrintReceiptSequence(entry);
-                            stopProgress();
-                        }
-                    });
-                }
-            }
-            ).run();
+            doScanAndPrint();
+        }
+    }
 
+    private void doScanAndPrint() {
+        if (isValid(entry)) {
+            startProgress("Scanning for device.");
+            tPrinter.startDiscovery(new DiscoverCallBacks() {
+                @Override
+                public void onDeviceDetected(DeviceInfo deviceInfo) {
+                    tPrinter.setTarget(deviceInfo.getTarget());
+                    tPrinter.startPrint(entry);
+                }
+            });
         }
     }
 
@@ -251,39 +232,82 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
     }
 
     @Override
-    public void onError(Exception errorMessage, String message) {
-        stopProgress();
-        new BottomDialog.Builder(this)
-                .setCancelable(false)
-                .setContent(message)
-                .setPositiveText("Retry")
-                .onPositive(new BottomDialog.ButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull BottomDialog bottomDialog) {
+    public void onError(Exception errorMessage, final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    stopProgress();
+                    new BottomDialog.Builder(AddEntryActivity.this)
+                            .setCancelable(false)
+                            .setContent(message)
+                            .setPositiveText("Retry")
+                            .onPositive(new BottomDialog.ButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull BottomDialog bottomDialog) {
+                                    doScanAndPrint();
+                                }
+                            })
+                            .setNegativeText("CANCEL")
+                            .build()
+                            .show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
-                    }
-                })
-                .setNegativeText("CANCEL")
-                .build()
-                .show();
+        });
     }
 
     @Override
-    public void onMessage(String message) {
-        stopProgress();
-        new BottomDialog.Builder(this)
-                .setCancelable(false)
-                .setContent(message)
-                .setPositiveText("Retry")
-                .onPositive(new BottomDialog.ButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull BottomDialog bottomDialog) {
+    public void onMessage(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Toast.makeText(AddEntryActivity.this, message, Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
-                    }
-                })
-                .setNegativeText("CANCEL")
-                .build()
-                .show();
+    }
+
+    @Override
+    public void startProgress(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    stopProgress();
+                    materialDialog = new MaterialDialog.Builder(AddEntryActivity.this)
+                            //.title("Loading")
+                            .content(message)
+                            .cancelable(false)
+                            .progress(true, 0)
+                            .show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void stopProgress() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (materialDialog == null) return;
+                    materialDialog.dismiss();
+                    materialDialog = null;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

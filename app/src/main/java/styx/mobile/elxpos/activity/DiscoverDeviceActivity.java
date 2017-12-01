@@ -73,6 +73,16 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
 
             }
 
+            @Override
+            public void startProgress(String message) {
+
+            }
+
+            @Override
+            public void stopProgress() {
+
+            }
+
         });
         tPrinter2.startDiscovery(new OnDetectDeviceListener() {
             @Override
