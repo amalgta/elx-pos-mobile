@@ -14,7 +14,6 @@ import com.google.gson.Gson;
 
 import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.R;
-import styx.mobile.elxpos.application.ShowError;
 import styx.mobile.elxpos.application.Utils;
 import styx.mobile.elxpos.model.Entry;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -67,21 +66,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     intent.putExtra(Constants.BundleKeys.Entry, entry);
                     startActivity(intent);
                 } else {
-                    ShowError.onError(this,
-                            "No saved receipts. Please create one.",
-                            "CREATE",
-                            new BottomDialog.ButtonCallback() {
+                    new BottomDialog.Builder(this)
+                            .setTitle("Error")
+                            .setContent("No saved receipts. Please create one.")
+                            .setPositiveText("CREATE")
+                            .onPositive(new BottomDialog.ButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull BottomDialog dialog) {
                                     startActivity(new Intent(MainActivity.this, AddEntryActivity.class));
                                 }
-                            }, "DISMISS",
-                            new BottomDialog.ButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull BottomDialog dialog) {
-                                }
-                            }
-                    );
+                            }).setCancelable(false)
+                            .setNegativeText("DISMISS")
+                            .show();
                 }
                 break;
         }

@@ -20,9 +20,6 @@ import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.adapter.PrinterRecyclerAdapter;
 import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.application.Utils;
-import styx.mobile.elxpos.application.printer.OnDetectDeviceListener;
-import styx.mobile.elxpos.application.printer.PrinterCallBacks;
-import styx.mobile.elxpos.application.printer.TPrinter2;
 import styx.mobile.elxpos.model.Device;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -32,7 +29,7 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
     PrinterRecyclerAdapter adapter;
     AVLoadingIndicatorView progressView;
     View buttonRestartDiscovery;
-    TPrinter2 tPrinter2;
+    //TPrinter2 tPrinter2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +54,7 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
 
         buttonRestartDiscovery.setOnClickListener(this);
 
-        tPrinter2 = new TPrinter2(this, new PrinterCallBacks() {
+        /*tPrinter2 = new TPrinter2(this, new PrinterCallBacks() {
             @Override
             public void onPrinterReady(String status) {
 
@@ -102,6 +99,7 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
 
             }
         });
+    */
     }
 
     @Override
@@ -112,12 +110,12 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
 
     private void restartDiscovery() {
         progressView.smoothToHide();
-        tPrinter2.stopDiscovery();
+        //tPrinter2.stopDiscovery();
 
         adapter.clear();
         progressView.smoothToShow();
 
-        tPrinter2.startDiscovery(new OnDetectDeviceListener() {
+        /*tPrinter2.startDiscovery(new OnDetectDeviceListener() {
             @Override
             public void onDetectDevice(final DeviceInfo deviceInfo) {
                 runOnUiThread(new Runnable() {
@@ -135,6 +133,7 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
 
             }
         });
+        */
     }
 
     public void onError() {
@@ -156,7 +155,7 @@ public class DiscoverDeviceActivity extends AppCompatActivity implements View.On
     @Override
     public void onDestroy() {
         super.onDestroy();
-        tPrinter2.stopDiscovery();
+        //tPrinter2.stopDiscovery();
     }
 
     @Override

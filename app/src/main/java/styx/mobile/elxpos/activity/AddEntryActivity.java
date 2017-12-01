@@ -177,7 +177,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
 
     private void doScanAndPrint() {
         if (isValid(entry)) {
-            startProgress("Scanning for device.");
+            startProgress("Connecting device.");
             tPrinter.startDiscovery(new DiscoverCallBacks() {
                 @Override
                 public void onDeviceDetected(DeviceInfo deviceInfo) {
