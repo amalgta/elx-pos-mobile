@@ -191,11 +191,6 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                 @Override
                 public void run() {
                     showProgress("Scanning for device.");
-//                    if (!TextUtils.isEmpty(tPrinter.getTarget())) {
-//                        showProgress("Printing on progress.");
-//                        tPrinter.runPrintReceiptSequence(entry);
-//                        stopProgress();
-//                    } else {
                     tPrinter.startDiscovery(new DiscoverCallBacks() {
                         @Override
                         public void onDeviceDetected(DeviceInfo deviceInfo) {
@@ -204,8 +199,6 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                             tPrinter.runPrintReceiptSequence(entry);
                             stopProgress();
                         }
-//                        });
-//                    }
                     });
                 }
             }
@@ -273,7 +266,6 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                 .setNegativeText("CANCEL")
                 .build()
                 .show();
-        //ShowMsg.showException(errorMessage, message);
     }
 
     @Override

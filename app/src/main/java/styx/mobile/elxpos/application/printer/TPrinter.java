@@ -143,7 +143,6 @@ public class TPrinter implements ReceiveListener {
         }
 
         PrinterStatusInfo status = mPrinter.getStatus();
-
         PrinterUtils.dispPrinterWarnings(status);
 
         if (!isPrintable(status)) {
@@ -167,7 +166,6 @@ public class TPrinter implements ReceiveListener {
             }
             return false;
         }
-
         return true;
     }
 
@@ -178,9 +176,7 @@ public class TPrinter implements ReceiveListener {
             printerCallBacks.onError(e, "Printer");
             return false;
         }
-
         mPrinter.setReceiveEventListener(this);
-
         return true;
     }
 
@@ -190,9 +186,7 @@ public class TPrinter implements ReceiveListener {
         }
 
         mPrinter.clearCommandBuffer();
-
         mPrinter.setReceiveEventListener(null);
-
         mPrinter = null;
     }
 
