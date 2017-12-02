@@ -40,7 +40,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-
                     android:orientation="vertical">
 
                     <TextView
@@ -48,7 +47,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/bebas"
-                        android:text="Elx POS"
+                        android:text="Elx  POS"
                         android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/font_36" />
@@ -59,7 +58,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/margin_default"
                         android:fontFamily="@font/bebas"
-                        android:text="PRINTING SOLUTION"
+                        android:text="PRINTING SUITE FOR EPSON"
                         android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/font_16" />
