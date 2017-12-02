@@ -8,25 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TextViewDefault">
-        <item name="fontPath">@string/RobotoRegular</item>
-    </style>
-
-    <style name="RobotoBlack">
-        <item name="fontPath">@string/RobotoBlack</item>
-    </style>
-
-    <style name="TextViewLight">
-        <item name="fontPath">@string/RobotoLight</item>
-    </style>
-
-    <style name="TextViewThin">
-        <item name="fontPath">@string/RobotoThin</item>
-    </style>
-
     <style name="ErrorToast">
         <item name="android:textColor">@color/white</item>
-        <item name="android:fontFamily">@string/RobotoThin</item>
         <item name="android:colorBackground">@color/green_1</item>
         <item name="android:icon">@drawable/ic_error</item>
     </style>

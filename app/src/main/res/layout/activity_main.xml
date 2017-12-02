@@ -7,77 +7,78 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_above="@+id/containerButtonNewEntry"
+        android:orientation="vertical"
+        android:weightSum="2">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/blue"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/gradient_yellow"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_default">
+
+            <ImageView
+                android:id="@+id/buttonSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/margin_default"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/margin_default"
+                android:src="@drawable/ic_settings"
+                android:tint="@color/white" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/bebas"
+                        android:text="Elx POS"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_36" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/margin_default"
+                        android:fontFamily="@font/bebas"
+                        android:text="PRINTING SOLUTION"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_16" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/margin_default">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="@dimen/margin_default"
-                    android:id="@+id/buttonSettings"
-                    android:src="@drawable/ic_settings" />
-            </RelativeLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:layout_marginEnd="@dimen/margin_default"
-                android:layout_marginStart="@dimen/margin_default"
-                android:layout_marginTop="@dimen/margin_small"
-                android:background="@drawable/gradient_glossy_bar" />
-
-            <RelativeLayout
-                android:id="@+id/buttonConfigurePrinter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_default"
-                android:background="?selectableItemBackground"
-                android:clickable="true"                android:visibility="gone"
-
-                android:focusable="true"
-                android:padding="@dimen/margin_default">
-
-                <TextView
-                    style="@style/TextViewDefault"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    android:layout_toStartOf="@+id/iconNext"
-                    android:text="Configure Printer"
-                    android:textColor="@color/white" />
-
-                <ImageView
-                    android:id="@+id/iconNext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_navigate_next" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginEnd="@dimen/margin_default"
-                android:visibility="gone"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginTop="@dimen/margin_small"
                 android:background="@drawable/gradient_glossy_bar" />
@@ -93,22 +94,24 @@
                 android:padding="@dimen/margin_default">
 
                 <TextView
-                    style="@style/TextViewDefault"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
                     android:layout_toStartOf="@+id/iconNext"
+                    android:fontFamily="@font/roboto_thin"
                     android:text="View Last Receipt"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_16" />
 
                 <ImageView
-                    android:id="@id/iconNext"
+                    android:id="@+id/iconNext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_navigate_next" />
+                    android:src="@drawable/ic_navigate_next"
+                    android:tint="@color/black" />
             </RelativeLayout>
 
 
@@ -122,43 +125,32 @@
                 android:background="@drawable/gradient_glossy_bar" />
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/gradient_green"
-            android:orientation="vertical"
-            android:padding="@dimen/margin_large">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:orientation="vertical"
-                android:padding="@dimen/margin_small">
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/buttonAddEntry"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:padding="@dimen/margin_default"
-                    android:src="@drawable/ic_print_white"
-                    app:backgroundTint="@color/blue"
-                    app:useCompatPadding="true" />
-
-                <TextView
-                    style="@style/TextViewLight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Add Entry"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-
-
-        </RelativeLayout>
     </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/containerButtonNewEntry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_n_small"
+        android:layout_marginLeft="@dimen/margin_tiny"
+        android:layout_marginRight="@dimen/margin_tiny"
+        app:cardBackgroundColor="@color/blue">
+
+        <TextView
+            android:id="@+id/buttonAddEntry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/bebas"
+            android:gravity="center"
+            android:padding="@dimen/margin_x_large"
+            android:text="NEW ENTRY"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_16" />
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

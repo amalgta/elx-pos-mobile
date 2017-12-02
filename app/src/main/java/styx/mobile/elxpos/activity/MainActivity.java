@@ -16,7 +16,6 @@ import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.application.Utils;
 import styx.mobile.elxpos.model.Entry;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     View buttonConfigurePrinter, buttonViewLastReceipt, buttonAddEntry, buttonSettings;
@@ -25,32 +24,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        buttonConfigurePrinter = findViewById(R.id.buttonConfigurePrinter);
         buttonViewLastReceipt = findViewById(R.id.buttonViewLastReceipt);
         buttonSettings = findViewById(R.id.buttonSettings);
         buttonAddEntry = findViewById(R.id.buttonAddEntry);
 
-        Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.blue));
+        Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.yellow_1));
 
-        buttonConfigurePrinter.setOnClickListener(this);
         buttonViewLastReceipt.setOnClickListener(this);
         buttonAddEntry.setOnClickListener(this);
         buttonSettings.setOnClickListener(this);
     }
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
-
-    @Override
     public void onClick(View view) {
         Intent intent;
         switch (view.getId()) {
-            case R.id.buttonConfigurePrinter:
-                intent = new Intent(MainActivity.this, DiscoverDeviceActivity.class);
-                startActivityForResult(intent, Constants.RequestCodes.SelectDevice);
-                break;
             case R.id.buttonAddEntry:
                 intent = new Intent(MainActivity.this, AddEntryActivity.class);
                 startActivity(intent);

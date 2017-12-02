@@ -1,9 +1,9 @@
 package styx.mobile.elxpos.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -25,7 +25,6 @@ import styx.mobile.elxpos.application.printer.DiscoverCallBacks;
 import styx.mobile.elxpos.application.printer.PrinterCallBacks;
 import styx.mobile.elxpos.application.printer.TPrinter;
 import styx.mobile.elxpos.model.Entry;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AddEntryActivity extends AppCompatActivity implements PrinterCallBacks, View.OnClickListener, RadioRealButtonGroup.OnClickedButtonListener {
 
@@ -95,36 +94,40 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         inputColumnNumber.setText(TextUtils.isEmpty(entry.getColumnNumber()) ? "" : entry.getColumnNumber());
 
         if (TextUtils.isEmpty(entry.getVehicleClass())) {
-            radioGroupVehicleClass.setPosition(-1);
+            radioGroupVehicleClass.setPosition(0);
         } else {
             for (int i = 0; i < radioGroupVehicleClass.getButtons().size(); i++) {
+                radioGroupVehicleClass.getButtons().get(i).setTypeface(ResourcesCompat.getFont(this, R.font.roboto_thin));
                 if (radioGroupVehicleClass.getButtons().get(i).getText().contentEquals(entry.getVehicleClass()))
                     radioGroupVehicleClass.setPosition(i);
             }
         }
 
         if (TextUtils.isEmpty(entry.getPaymentMethod())) {
-            radioGroupPaymentMethod.setPosition(-1);
+            radioGroupPaymentMethod.setPosition(0);
         } else {
             for (int i = 0; i < radioGroupPaymentMethod.getButtons().size(); i++) {
+                radioGroupPaymentMethod.getButtons().get(i).setTypeface(ResourcesCompat.getFont(this, R.font.roboto_thin));
                 if (radioGroupPaymentMethod.getButtons().get(i).getText().contentEquals(entry.getPaymentMethod()))
                     radioGroupPaymentMethod.setPosition(i);
             }
         }
 
         if (TextUtils.isEmpty(entry.getPassType())) {
-            radioGroupPassType.setPosition(-1);
+            radioGroupPassType.setPosition(0);
         } else {
             for (int i = 0; i < radioGroupPassType.getButtons().size(); i++) {
+                radioGroupPassType.getButtons().get(i).setTypeface(ResourcesCompat.getFont(this, R.font.roboto_thin));
                 if (radioGroupPassType.getButtons().get(i).getText().contentEquals(entry.getPassType()))
                     radioGroupPassType.setPosition(i);
             }
         }
 
         if (TextUtils.isEmpty(entry.getLane())) {
-            radioGroupLane.setPosition(-1);
+            radioGroupLane.setPosition(0);
         } else {
             for (int i = 0; i < radioGroupLane.getButtons().size(); i++) {
+                radioGroupLane.getButtons().get(i).setTypeface(ResourcesCompat.getFont(this, R.font.roboto_thin));
                 if (radioGroupLane.getButtons().get(i).getText().contentEquals(entry.getLane()))
                     radioGroupLane.setPosition(i);
             }
@@ -138,11 +141,6 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                 doSaveEntry();
                 break;
         }
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

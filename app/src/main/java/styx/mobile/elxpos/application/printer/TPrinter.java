@@ -223,21 +223,7 @@ public class TPrinter implements ReceiveListener {
                         discoverCallBacks.onDeviceDetected(deviceInfo);
                     }
                 });
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true) {
-                            try {
-                                Discovery.stop();
-                                break;
-                            } catch (Epos2Exception e) {
-                                if (e.getErrorStatus() != Epos2Exception.ERR_PROCESSING) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }).start();
+                stopDiscovery();
             }
         };
 
@@ -246,6 +232,24 @@ public class TPrinter implements ReceiveListener {
         } catch (Exception e) {
             printerCallBacks.onError(e, "start");
         }
+    }
+
+    public void stopDiscovery() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Discovery.stop();
+                        break;
+                    } catch (Epos2Exception e) {
+                        if (e.getErrorStatus() != Epos2Exception.ERR_PROCESSING) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }).start();
     }
 
     private static class PrintTask extends AsyncTask<Entry, String, Boolean> {

@@ -7,42 +7,13 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/buttonSave"
+        android:layout_above="@+id/containerButtonSave"
         android:layout_alignParentTop="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/blue"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp" />
-
-                <TextView
-                    style="@style/RobotoBlack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="@dimen/margin_default"
-                    android:text="ENTER DETAILS"
-                    android:textColor="@color/white" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_default"
-                    android:layout_marginStart="@dimen/margin_default"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:background="@drawable/gradient_glossy_bar" />
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,7 +36,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="2"
                         android:src="@drawable/ic_account_balance_wallet_white_24px"
-                        android:tint="@color/black" />
+                        android:tint="@color/green_1" />
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dp"
@@ -73,10 +44,11 @@
                         android:layout_weight="8"
                         android:hint="Transaction Number">
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/inputTransactionNumber"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_thin"
                             android:inputType="number"
                             android:maxLength="7" />
 
@@ -95,7 +67,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="2"
                         android:src="@drawable/ic_confirmation_number"
-                        android:tint="@color/black" />
+                        android:tint="@color/green_1" />
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dp"
@@ -103,10 +75,11 @@
                         android:layout_weight="8"
                         android:hint="Registration Number">
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/inputRegistrationNumber"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_thin"
                             android:inputType="number"
                             android:maxLength="4" />
 
@@ -125,7 +98,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="2"
                         android:src="@drawable/ic_format_list"
-                        android:tint="@color/black" />
+                        android:tint="@color/green_1" />
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dp"
@@ -133,11 +106,13 @@
                         android:layout_weight="8"
                         android:hint="Column Number">
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/inputColumnNumber"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_thin"
                             android:inputType="number"
+
                             android:maxLength="24" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -155,7 +130,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="2"
                         android:src="@drawable/ic_money_white"
-                        android:tint="@color/black" />
+                        android:tint="@color/green_1" />
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dp"
@@ -163,10 +138,11 @@
                         android:layout_weight="8"
                         android:hint="Amount Paid">
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/inputAmountPaid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_thin"
                             android:inputType="numberDecimal"
                             android:maxLength="8" />
 
@@ -193,6 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:layout_margin="@dimen/margin_default"
+                        android:fontFamily="@font/roboto_thin"
                         android:text="Vehicle Class"
                         android:textColor="@color/black" />
 
@@ -219,7 +196,8 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="Car/Jeep"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+                            app:rrb_textSize="@dimen/font_12" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radioLCV"
@@ -228,7 +206,8 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="LCV"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+                            app:rrb_textSize="@dimen/font_12" />
                     </co.ceryle.radiorealbutton.RadioRealButtonGroup>
                 </LinearLayout>
 
@@ -249,6 +228,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_margin="@dimen/margin_default"
+                            android:fontFamily="@font/roboto_thin"
+
                             android:text="Payment Method"
                             android:textColor="@color/black" />
 
@@ -275,7 +256,8 @@
                                 app:rrb_ripple="true"
                                 app:rrb_rippleColor="@color/black_1"
                                 app:rrb_text="Cash"
-                                app:rrb_textColor="@color/black" />
+                                app:rrb_textColor="@color/black"
+                                app:rrb_textSize="@dimen/font_12" />
 
                             <co.ceryle.radiorealbutton.RadioRealButton
                                 android:id="@+id/radioCard"
@@ -284,7 +266,8 @@
                                 app:rrb_ripple="true"
                                 app:rrb_rippleColor="@color/black_1"
                                 app:rrb_text="Card"
-                                app:rrb_textColor="@color/black" />
+                                app:rrb_textColor="@color/black"
+                                app:rrb_textSize="@dimen/font_12" />
                         </co.ceryle.radiorealbutton.RadioRealButtonGroup>
                     </LinearLayout>
 
@@ -298,9 +281,11 @@
 
                         <TextView
                             android:layout_width="wrap_content"
+
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_margin="@dimen/margin_default"
+                            android:fontFamily="@font/roboto_thin"
                             android:text="Pass Type"
                             android:textColor="@color/black" />
 
@@ -327,7 +312,8 @@
                                 app:rrb_ripple="true"
                                 app:rrb_rippleColor="@color/black_1"
                                 app:rrb_text="MULTIPLE"
-                                app:rrb_textColor="@color/black" />
+                                app:rrb_textColor="@color/black"
+                                app:rrb_textSize="@dimen/font_12" />
 
                             <co.ceryle.radiorealbutton.RadioRealButton
                                 android:id="@+id/radioSingle"
@@ -336,7 +322,8 @@
                                 app:rrb_ripple="true"
                                 app:rrb_rippleColor="@color/black_1"
                                 app:rrb_text="SINGLE"
-                                app:rrb_textColor="@color/black" />
+                                app:rrb_textColor="@color/black"
+                                app:rrb_textSize="@dimen/font_12" />
                         </co.ceryle.radiorealbutton.RadioRealButtonGroup>
                     </LinearLayout>
                 </LinearLayout>
@@ -348,9 +335,11 @@
 
                     <TextView
                         android:layout_width="wrap_content"
+
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:layout_margin="@dimen/margin_default"
+                        android:fontFamily="@font/roboto_thin"
                         android:text="Lane"
                         android:textColor="@color/black" />
 
@@ -376,7 +365,8 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="1"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+                            app:rrb_textSize="@dimen/font_10" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radio2"
@@ -385,7 +375,9 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="2"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+
+                            app:rrb_textSize="@dimen/font_10" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radio3"
@@ -394,7 +386,9 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="3"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+
+                            app:rrb_textSize="@dimen/font_10" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radio4"
@@ -403,7 +397,9 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="4"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+
+                            app:rrb_textSize="@dimen/font_10" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radio5"
@@ -411,8 +407,10 @@
                             android:layout_height="wrap_content"
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
+
                             app:rrb_text="5"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+                            app:rrb_textSize="@dimen/font_10" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radio6"
@@ -421,7 +419,9 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="6"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+
+                            app:rrb_textSize="@dimen/font_10" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radio7"
@@ -430,7 +430,9 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="7"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+
+                            app:rrb_textSize="@dimen/font_10" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radio8"
@@ -439,7 +441,9 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="8"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+
+                            app:rrb_textSize="@dimen/font_10" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radio9"
@@ -448,7 +452,9 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="9"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+
+                            app:rrb_textSize="@dimen/font_10" />
 
                         <co.ceryle.radiorealbutton.RadioRealButton
                             android:id="@+id/radio10"
@@ -457,7 +463,9 @@
                             app:rrb_ripple="true"
                             app:rrb_rippleColor="@color/black_1"
                             app:rrb_text="10"
-                            app:rrb_textColor="@color/black" />
+                            app:rrb_textColor="@color/black"
+
+                            app:rrb_textSize="@dimen/font_10" />
                     </co.ceryle.radiorealbutton.RadioRealButtonGroup>
                 </LinearLayout>
 
@@ -467,33 +475,27 @@
     </ScrollView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/buttonSave"
+        android:id="@+id/containerButtonSave"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/margin_default"
-        android:layout_marginLeft="@dimen/margin_default"
-        android:layout_marginRight="@dimen/margin_default"
-        android:layout_marginStart="@dimen/margin_default"
-        android:alpha=".9"
-        android:animateLayoutChanges="true"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_marginBottom="@dimen/margin_n_small"
+        android:layout_marginLeft="@dimen/margin_tiny"
+        android:layout_marginRight="@dimen/margin_tiny"
+        app:cardBackgroundColor="@color/blue">
 
-        <FrameLayout
+        <TextView
+            android:id="@+id/buttonSave"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/red_1"
-            android:padding="@dimen/margin_default">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="PROCESS ENTRY"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-        </FrameLayout>
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/bebas"
+            android:gravity="center"
+            android:padding="@dimen/margin_x_large"
+            android:text="PRINT"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_16" />
     </android.support.v7.widget.CardView>
 </RelativeLayout>

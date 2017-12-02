@@ -7,7 +7,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/buttonSave"
+        android:layout_above="@+id/containerButtonSave"
         android:layout_alignParentTop="true">
 
         <LinearLayout
@@ -19,29 +19,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/blue"
-                android:orientation="vertical">
+                android:paddingBottom="@dimen/margin_large"
+                android:paddingTop="@dimen/margin_large">
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp" />
-
-                <TextView
-                    style="@style/RobotoBlack"
+                <ImageView
+                    android:id="@+id/iconBack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="@dimen/margin_default"
-                    android:text="SETTINGS"
-                    android:textColor="@color/white" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/margin_large"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="@dimen/margin_default"
+                    android:src="@drawable/ic_left_arrow" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_default"
-                    android:layout_marginStart="@dimen/margin_default"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:background="@drawable/gradient_glossy_bar" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/margin_default"
+                    android:layout_marginStart="@dimen/margin_large"
+                    android:layout_marginTop="@dimen/margin_default"
+                    android:drawablePadding="@dimen/margin_default"
+                    android:fontFamily="@font/roboto_thin"
+                    android:text="Preferences"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_14" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -65,18 +70,19 @@
                         android:layout_gravity="center_vertical"
                         android:layout_weight="2"
                         android:src="@drawable/ic_account_balance_wallet_white_24px"
-                        android:tint="@color/black" />
+                        android:tint="@color/green_1" />
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                        android:hint="Emergency Number">
+                        android:layout_weight="8">
 
-                        <EditText
+                        <android.support.design.widget.TextInputEditText
                             android:id="@+id/inputPhoneNumber"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_thin"
+                            android:hint="Emergency Number"
                             android:inputType="phone"
                             android:maxLength="12" />
 
@@ -97,36 +103,32 @@
             </LinearLayout>
 
         </LinearLayout>
+
     </ScrollView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/buttonSave"
+        android:id="@+id/containerButtonSave"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:animateLayoutChanges="true"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/margin_default"
-        android:layout_marginLeft="@dimen/margin_default"
-        android:layout_marginRight="@dimen/margin_default"
-        android:layout_marginStart="@dimen/margin_default"
-        android:alpha=".9"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_marginBottom="@dimen/margin_n_small"
+        android:layout_marginLeft="@dimen/margin_tiny"
+        android:layout_marginRight="@dimen/margin_tiny"
+        app:cardBackgroundColor="@color/blue">
 
-        <FrameLayout
+        <TextView
+            android:id="@+id/buttonSave"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/red_1"
-            android:padding="@dimen/margin_default">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="SAVE"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-        </FrameLayout>
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/bebas"
+            android:gravity="center"
+            android:padding="@dimen/margin_x_large"
+            android:text="SAVE"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_16" />
     </android.support.v7.widget.CardView>
+
 </RelativeLayout>

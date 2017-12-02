@@ -11,11 +11,10 @@ import android.widget.EditText;
 import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.application.Utils;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class PreferencesActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private View buttonSave;
+    private View buttonSave, iconBack;
     private EditText inputPhoneNumber;
 
     @Override
@@ -26,7 +25,10 @@ public class PreferencesActivity extends AppCompatActivity implements View.OnCli
         Utils.setTitleColor(this, ContextCompat.getColor(this, R.color.blue));
 
         inputPhoneNumber = findViewById(R.id.inputPhoneNumber);
+        iconBack = findViewById(R.id.iconBack);
         buttonSave = findViewById(R.id.buttonSave);
+
+        iconBack.setOnClickListener(this);
         buttonSave.setOnClickListener(this);
 
         bindUI();
@@ -41,15 +43,13 @@ public class PreferencesActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.iconBack:
+                onBackPressed();
+                break;
             case R.id.buttonSave:
                 doSaveEntry();
                 break;
         }
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     private void doSaveEntry() {
