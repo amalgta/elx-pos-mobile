@@ -8,19 +8,20 @@ public class Constants {
     public static String dbStorageKey = "privateStorage";
 
     public interface BundleKeys {
-        String DeviceName = "DeviceName";
         String PersistedEntry = "PersistedEntry";
         String Entry = "Entry";
     }
 
-    public interface RequestCodes {
-        int SelectDevice = 0;
-    }
-
     public interface DataBaseStorageKeys {
-        String Device = "Device";
         String LastPrintedReceipt = "LastPrintedReceipt";
-        String ContactNumber= "ContactNumber";
+        String ContactNumber = "ContactNumber";
+        String inputTitle1 = "inputTitle1";
+        String inputTitle2 = "inputTitle2";
+        String inputFooter1 = "inputFooter1";
+        String inputFooter2 = "inputFooter2";
+        String inputFooter3 = "inputFooter3";
+        String inputFooter4 = "inputFooter4";
+        String inputFooter5 = "inputFooter5";
     }
 
     public interface DateFormat {

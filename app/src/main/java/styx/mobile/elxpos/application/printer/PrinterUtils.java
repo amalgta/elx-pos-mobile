@@ -211,7 +211,7 @@ class PrinterUtils {
                 mPrinter.addText(String.format(format, "Expiry          :", Utils.getTomorrow()));
 
                 mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
-                mPrinter.addText(String.format(format, "Reg.No          :", "3820"));
+                mPrinter.addText(String.format(format, "Reg.No          :", entry.getRegistrationNumber()));
                 mPrinter.addText(String.format(format, "Amount Paid     :", "Rs." + entry.getAmountPaid()));
                 mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
 

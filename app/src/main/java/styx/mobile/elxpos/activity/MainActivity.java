@@ -1,24 +1,24 @@
 package styx.mobile.elxpos.activity;
 
-import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.gson.Gson;
 
-import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.R;
+import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.application.Utils;
 import styx.mobile.elxpos.model.Entry;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    View buttonConfigurePrinter, buttonViewLastReceipt, buttonAddEntry, buttonSettings;
+    View buttonViewLastReceipt;
+    View buttonAddEntry;
+    View buttonSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,21 +66,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }).setCancelable(false)
                             .setNegativeText("DISMISS")
                             .show();
-                }
-                break;
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, final int resultCode, final Intent data) {
-        switch (requestCode) {
-            case Constants.RequestCodes.SelectDevice:
-                if (data != null && resultCode == RESULT_OK) {
-                    String deviceTarget = data.getStringExtra(Constants.BundleKeys.DeviceName);
-                    if (!TextUtils.isEmpty(deviceTarget)) {
-                        //EditText mEdtTarget = findViewById(R.id.edtTarget);
-                        //mEdtTarget.setText(deviceTarget);
-                    }
                 }
                 break;
         }
