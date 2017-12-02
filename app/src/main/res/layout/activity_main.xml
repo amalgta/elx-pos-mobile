@@ -58,7 +58,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="@dimen/margin_default"
                         android:fontFamily="@font/bebas"
-                        android:text="PRINTING SUITE FOR EPSON"
+                        android:text="PRINTING   SUITE   FOR   EPSON"
                         android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/font_16" />

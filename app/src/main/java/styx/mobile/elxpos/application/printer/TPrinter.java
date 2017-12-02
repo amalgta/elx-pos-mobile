@@ -76,7 +76,7 @@ public class TPrinter implements ReceiveListener {
         try {
             mPrinter.sendData(Printer.PARAM_DEFAULT);
         } catch (Exception e) {
-            printerCallBacks.onError(e, "sendData");
+            printerCallBacks.onError(e, "Failed to send data to printer.");
             try {
                 mPrinter.disconnect();
             } catch (Exception ex) {
@@ -119,7 +119,7 @@ public class TPrinter implements ReceiveListener {
             if (TextUtils.isEmpty(target)) throw new Exception("TargetEmptyException");
             mPrinter.connect(target, Printer.PARAM_DEFAULT);
         } catch (Exception e) {
-            printerCallBacks.onError(e, "connect");
+            printerCallBacks.onError(e, "Connection failed. Please reconnect printer.");
             return false;
         }
 
