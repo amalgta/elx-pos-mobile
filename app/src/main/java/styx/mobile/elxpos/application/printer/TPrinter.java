@@ -91,7 +91,7 @@ public class TPrinter implements ReceiveListener {
         try {
             mPrinter = new Printer(0, 0, activity);
         } catch (Exception e) {
-            printerCallBacks.onError(e, "Printer");
+            printerCallBacks.onError(e, "Failed to open printer.");
             return false;
         }
         mPrinter.setReceiveEventListener(this);
@@ -127,14 +127,13 @@ public class TPrinter implements ReceiveListener {
             mPrinter.beginTransaction();
             isBeginTransaction = true;
         } catch (Exception e) {
-            printerCallBacks.onError(e, "beginTransaction");
+            printerCallBacks.onError(e, "We encountered and error while connecting to printer.");
         }
 
         if (!isBeginTransaction) {
             try {
                 mPrinter.disconnect();
             } catch (Exception e) {
-                // Do nothing
                 return false;
             }
         }
@@ -146,14 +145,13 @@ public class TPrinter implements ReceiveListener {
         if (mPrinter == null) {
             return;
         }
-
         try {
             mPrinter.endTransaction();
         } catch (final Exception e) {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public synchronized void run() {
-                    printerCallBacks.onError(e, "endTransaction");
+                    //Log if you want to.
                 }
             });
         }
@@ -164,7 +162,7 @@ public class TPrinter implements ReceiveListener {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public synchronized void run() {
-                    printerCallBacks.onError(e, "disconnect");
+                    //Log if you want to.
                 }
             });
         }
@@ -177,7 +175,6 @@ public class TPrinter implements ReceiveListener {
         activity.runOnUiThread(new Runnable() {
             @Override
             public synchronized void run() {
-                //ShowMsg.showResult(code, makeErrorMessage(activity, status), activity);
                 String errMsg = PrinterUtils.makeErrorMessage(activity, status);
 
                 String msg;
@@ -230,7 +227,7 @@ public class TPrinter implements ReceiveListener {
         try {
             Discovery.start(activity, mFilterOption, mDiscoveryListener);
         } catch (Exception e) {
-            printerCallBacks.onError(e, "start");
+            printerCallBacks.onError(e, "Printer discovery failed.");
         }
     }
 

@@ -11,6 +11,7 @@ import com.epson.epos2.printer.PrinterStatusInfo;
 import com.epson.eposprint.Builder;
 
 import styx.mobile.elxpos.R;
+import styx.mobile.elxpos.activity.PreferencesActivity;
 import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.application.Utils;
 import styx.mobile.elxpos.model.Entry;
@@ -19,7 +20,7 @@ import styx.mobile.elxpos.model.Entry;
  * Created by amalg on 24-11-2017.
  */
 
-class PrinterUtils {
+public class PrinterUtils {
     public static final String TAG = "PrinterUtils";
 
     static String getCodeText(int state) {
@@ -176,7 +177,6 @@ class PrinterUtils {
 
         if (mPrinter == null) return false;
 
-        String contactNumber = Utils.getPersistData(activity, Constants.DataBaseStorageKeys.ContactNumber);
         String format = ("    %1$s %2$s\n");
 
         final int barcodeWidth = 2;
@@ -190,8 +190,8 @@ class PrinterUtils {
             mPrinter.addTextFont(Printer.FONT_A);
 
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
-            mPrinter.addText(String.format(format, "GIPL TOLL PLAZA - NH47.", ""));
-            mPrinter.addText(String.format(format, "Thrishur-Edapally", ""));
+            mPrinter.addText(String.format(format, Utils.getPersistData(activity, Constants.DataBaseStorageKeys.inputTitle1), ""));
+            mPrinter.addText(String.format(format, Utils.getPersistData(activity, Constants.DataBaseStorageKeys.inputTitle2), ""));
             mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
 
             mPrinter.addText(String.format(format, "===========================================", ""));
@@ -217,12 +217,12 @@ class PrinterUtils {
 
                 mPrinter.addText(String.format(format, entry.getColumnNumber(), ""));
                 mPrinter.addText(String.format(format, "===========================================", ""));
-                mPrinter.addText(String.format(format, "GIPL WISHES YOU", ""));
-                mPrinter.addText(String.format(format, "*HAPPY JOURNEY*. Free Services", ""));
-                mPrinter.addText(String.format(format, "Ambulance\\Crane\\Route Patrol", ""));
-                mPrinter.addText(String.format(format, "Toll Plaza at Km-278.00", ""));
-                mPrinter.addText(String.format(format, "Emergency Contact-", TextUtils.isEmpty(contactNumber) ? "" : contactNumber));
-                mPrinter.addText(String.format(format, "(From Km-270.00 to 342.00)", ""));
+                mPrinter.addText(String.format(format, Utils.getPersistData(activity, Constants.DataBaseStorageKeys.inputFooter1), ""));
+                mPrinter.addText(String.format(format, Utils.getPersistData(activity, Constants.DataBaseStorageKeys.inputFooter2), ""));
+                mPrinter.addText(String.format(format, Utils.getPersistData(activity, Constants.DataBaseStorageKeys.inputFooter3), ""));
+                mPrinter.addText(String.format(format, Utils.getPersistData(activity, Constants.DataBaseStorageKeys.inputFooter4), ""));
+                mPrinter.addText(String.format(format, "Emergency Contact-", Utils.getPersistData(activity, Constants.DataBaseStorageKeys.ContactNumber)));
+                mPrinter.addText(String.format(format, Utils.getPersistData(activity, Constants.DataBaseStorageKeys.inputFooter5), ""));
 
                 mPrinter.addTextAlign(Printer.ALIGN_CENTER);
                 method = "addBarcode";
@@ -241,5 +241,16 @@ class PrinterUtils {
             return false;
         }
         return true;
+    }
+
+    public static void generateDefaults(Context context) {
+        Utils.persistData(context, Constants.DataBaseStorageKeys.ContactNumber, "8129255666");
+        Utils.persistData(context, Constants.DataBaseStorageKeys.inputTitle1, "GIPL TOLL PLAZA - NH47.");
+        Utils.persistData(context, Constants.DataBaseStorageKeys.inputTitle2, "Thrishur-Edapally");
+        Utils.persistData(context, Constants.DataBaseStorageKeys.inputFooter1, "GIPL WISHES YOU");
+        Utils.persistData(context, Constants.DataBaseStorageKeys.inputFooter2, "*HAPPY JOURNEY*. Free Services");
+        Utils.persistData(context, Constants.DataBaseStorageKeys.inputFooter3, "Ambulance\\Crane\\Route Patrol");
+        Utils.persistData(context, Constants.DataBaseStorageKeys.inputFooter4, "Toll Plaza at Km-278.00");
+        Utils.persistData(context, Constants.DataBaseStorageKeys.inputFooter5, "(From Km-270.00 to 342.00))");
     }
 }

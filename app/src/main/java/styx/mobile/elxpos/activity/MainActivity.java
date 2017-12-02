@@ -1,7 +1,9 @@
 package styx.mobile.elxpos.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import com.google.gson.Gson;
 import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.application.Utils;
+import styx.mobile.elxpos.application.printer.PrinterUtils;
 import styx.mobile.elxpos.model.Entry;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -33,6 +36,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonViewLastReceipt.setOnClickListener(this);
         buttonAddEntry.setOnClickListener(this);
         buttonSettings.setOnClickListener(this);
+
+        initializePreferences();
+    }
+
+    private void initializePreferences() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!prefs.getBoolean(Constants.BundleKeys.firstTime, false)) {
+            PrinterUtils.generateDefaults(this);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(Constants.BundleKeys.firstTime, true);
+            editor.apply();
+        }
     }
 
     @Override

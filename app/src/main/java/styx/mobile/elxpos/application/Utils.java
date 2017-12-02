@@ -47,13 +47,13 @@ public class Utils {
         return simpleDateFormat.format(calendar.getTime());
     }
 
-    public static String getPersistData(Context activity, String key) {
-        return activity.getSharedPreferences(Constants.dbStorageKey, Context.MODE_PRIVATE)
+    public static String getPersistData(Context context, String key) {
+        return context.getSharedPreferences(Constants.dbStorageKey, Context.MODE_PRIVATE)
                 .getString(key, null);
     }
 
-    public static void persistData(Context activity, String key, String value) {
-        SharedPreferences settings = activity.getSharedPreferences(Constants.dbStorageKey, Context.MODE_PRIVATE);
+    public static void persistData(Context context, String key, String value) {
+        SharedPreferences settings = context.getSharedPreferences(Constants.dbStorageKey, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
         editor.apply();

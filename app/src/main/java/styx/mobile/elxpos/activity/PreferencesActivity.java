@@ -9,10 +9,11 @@ import android.widget.EditText;
 import styx.mobile.elxpos.R;
 import styx.mobile.elxpos.application.Constants;
 import styx.mobile.elxpos.application.Utils;
+import styx.mobile.elxpos.application.printer.PrinterUtils;
 
 public class PreferencesActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private View buttonSave, iconBack;
+    private View buttonSave, iconBack, iconRestore;
     private EditText inputPhoneNumber;
     private EditText inputTitle1;
     private EditText inputTitle2;
@@ -40,9 +41,11 @@ public class PreferencesActivity extends AppCompatActivity implements View.OnCli
 
         iconBack = findViewById(R.id.iconBack);
         buttonSave = findViewById(R.id.buttonSave);
+        iconRestore = findViewById(R.id.iconRestore);
 
         iconBack.setOnClickListener(this);
         buttonSave.setOnClickListener(this);
+        iconRestore.setOnClickListener(this);
 
         bindUI();
     }
@@ -66,6 +69,10 @@ public class PreferencesActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.buttonSave:
                 doSaveEntry();
+                break;
+            case R.id.iconRestore:
+                PrinterUtils.generateDefaults(this);
+                bindUI();
                 break;
         }
     }

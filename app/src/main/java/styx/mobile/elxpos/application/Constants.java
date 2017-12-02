@@ -10,6 +10,7 @@ public class Constants {
     public interface BundleKeys {
         String PersistedEntry = "PersistedEntry";
         String Entry = "Entry";
+        String firstTime = "firstTime";
     }
 
     public interface DataBaseStorageKeys {

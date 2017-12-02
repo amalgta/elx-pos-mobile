@@ -1,5 +1,6 @@
 package styx.mobile.elxpos.activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -175,7 +176,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
 
     private void doScanAndPrint() {
         if (isValid(entry)) {
-            startProgress("Connecting device.");
+            startProgress("Establishing connection");
             tPrinter.startDiscovery(new DiscoverCallBacks() {
                 @Override
                 public void onDeviceDetected(DeviceInfo deviceInfo) {
@@ -263,7 +264,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
             @Override
             public void run() {
                 try {
-                    Toast.makeText(AddEntryActivity.this, message, Toast.LENGTH_SHORT).show();
+                    StyleableToast.makeText(AddEntryActivity.this, message, Toast.LENGTH_SHORT, R.style.ErrorToast).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -280,9 +281,14 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                 try {
                     stopProgress();
                     materialDialog = new MaterialDialog.Builder(AddEntryActivity.this)
-                            //.title("Loading")
                             .content(message)
-                            .cancelable(false)
+                            .cancelable(true)
+                            .cancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    tPrinter.stopDiscovery();
+                                }
+                            })
                             .progress(true, 0)
                             .show();
                 } catch (Exception e) {
