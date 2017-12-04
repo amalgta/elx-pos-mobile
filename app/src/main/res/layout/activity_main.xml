@@ -147,7 +147,7 @@
             android:fontFamily="@font/bebas"
             android:gravity="center"
             android:padding="@dimen/margin_x_large"
-            android:text="NEW ENTRY"
+            android:text="NEW   ENTRY"
             android:textColor="@color/white"
             android:textSize="@dimen/font_16" />
     </android.support.v7.widget.CardView>

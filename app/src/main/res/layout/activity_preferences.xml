@@ -32,6 +32,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="@dimen/margin_default"
             android:layout_marginStart="@dimen/margin_large"
+            android:layout_marginEnd="@dimen/margin_large"
             android:layout_marginTop="@dimen/margin_default"
             android:layout_toEndOf="@+id/iconBack"
             android:layout_toStartOf="@+id/iconRestore"
