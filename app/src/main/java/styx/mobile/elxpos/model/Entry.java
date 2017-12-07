@@ -18,8 +18,10 @@ public class Entry implements Parcelable {
     private String paymentMethod;
     private String passType;
     private String lane;
+    private String startTime;
+    private String endTime;
 
-    public Entry(String transactionNumber, String registrationNumber, String columnNumber, String amountPaid, String vehicleClass, String paymentMethod, String passType, String lane) {
+    public Entry(String transactionNumber, String registrationNumber, String columnNumber, String amountPaid, String vehicleClass, String paymentMethod, String passType, String lane, String startTime, String endTime) {
         this.transactionNumber = transactionNumber;
         this.registrationNumber = registrationNumber;
         this.columnNumber = columnNumber;
@@ -28,6 +30,8 @@ public class Entry implements Parcelable {
         this.paymentMethod = paymentMethod;
         this.passType = passType;
         this.lane = lane;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public Entry() {
@@ -42,6 +46,8 @@ public class Entry implements Parcelable {
         paymentMethod = in.readString();
         passType = in.readString();
         lane = in.readString();
+        startTime = in.readString();
+        endTime = in.readString();
     }
 
     @Override
@@ -54,6 +60,8 @@ public class Entry implements Parcelable {
         dest.writeString(paymentMethod);
         dest.writeString(passType);
         dest.writeString(lane);
+        dest.writeString(startTime);
+        dest.writeString(endTime);
     }
 
     @Override
@@ -135,5 +143,21 @@ public class Entry implements Parcelable {
 
     public void setLane(String lane) {
         this.lane = lane;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 }

@@ -196,7 +196,7 @@ public class PrinterUtils {
 
             mPrinter.addText(String.format(format, "===========================================", ""));
             mPrinter.addText(String.format(format, "Tran. Number    :", entry.getTransactionNumber()));
-            mPrinter.addText(String.format(format, "Date            :", Utils.getToday()));
+            mPrinter.addText(String.format(format, "Date            :", entry.getStartTime()));
             mPrinter.addText(String.format(format, "Lane            :", entry.getLane()));
             mPrinter.addText(String.format(format, "Operator        :", "cksgh"));
             mPrinter.addText(String.format(format, "Vehicle Class   :", entry.getVehicleClass()));
@@ -208,7 +208,7 @@ public class PrinterUtils {
                 mPrinter.addText(String.format(format, "Pass Type       :", entry.getPassType()));
                 mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.FALSE, Builder.PARAM_UNSPECIFIED);
 
-                mPrinter.addText(String.format(format, "Expiry          :", Utils.getTomorrow()));
+                mPrinter.addText(String.format(format, "Expiry          :", entry.getEndTime()));
 
                 mPrinter.addTextStyle(Builder.PARAM_UNSPECIFIED, Builder.PARAM_UNSPECIFIED, Builder.TRUE, Builder.PARAM_UNSPECIFIED);
                 mPrinter.addText(String.format(format, "Reg.No          :", entry.getRegistrationNumber()));

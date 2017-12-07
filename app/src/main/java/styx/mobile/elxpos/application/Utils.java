@@ -35,16 +35,15 @@ public class Utils {
         }
     }
 
-    public static String getToday() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DateFormat.PrintDate, Locale.ENGLISH);
-        return simpleDateFormat.format(Calendar.getInstance().getTime());
-    }
-
-    public static String getTomorrow() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
+    public static String getParsedCalendar(Calendar calendar) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DateFormat.PrintDate, Locale.ENGLISH);
         return simpleDateFormat.format(calendar.getTime());
+    }
+
+    public static Calendar getTomorrow(Calendar calendar) {
+        Calendar calendar2 = (Calendar) calendar.clone();
+        calendar2.add(Calendar.DAY_OF_YEAR, 1);
+        return calendar2;
     }
 
     public static String getPersistData(Context context, String key) {
@@ -83,5 +82,21 @@ public class Utils {
     public static String leadingZeros(String s, int length) {
         if (s.length() >= length) return s;
         else return String.format("%0" + (length - s.length()) + "d%s", 0, s);
+    }
+
+    public static String getDateOrdinal(int n) {
+        if (n >= 11 && n <= 13) {
+            return "th";
+        }
+        switch (n % 10) {
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
+        }
     }
 }

@@ -1,5 +1,7 @@
 package styx.mobile.elxpos.activity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,7 +10,10 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -16,6 +21,10 @@ import com.epson.epos2.discovery.DeviceInfo;
 import com.github.javiersantos.bottomdialogs.BottomDialog;
 import com.google.gson.Gson;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import co.ceryle.radiorealbutton.RadioRealButton;
 import co.ceryle.radiorealbutton.RadioRealButtonGroup;
@@ -29,12 +38,15 @@ import styx.mobile.elxpos.model.Entry;
 
 public class AddEntryActivity extends AppCompatActivity implements PrinterCallBacks, View.OnClickListener, RadioRealButtonGroup.OnClickedButtonListener {
 
-    private View buttonSave;
+    private View buttonSave, containerDatePicker, containerTimePicker;
+    private TextView labelReminderDate, labelReminderMinute, labelReminderHour, labelReminderPeriod;
     private EditText inputTransactionNumber, inputRegistrationNumber, inputColumnNumber, inputAmountPaid;
     private RadioRealButtonGroup radioGroupVehicleClass, radioGroupPaymentMethod, radioGroupPassType, radioGroupLane;
     private Entry entry;
     private TPrinter tPrinter;
     private MaterialDialog materialDialog;
+
+    Calendar calendarReminderTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +64,15 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         radioGroupPaymentMethod = findViewById(R.id.radioGroupPaymentMethod);
         radioGroupPassType = findViewById(R.id.radioGroupPassType);
         radioGroupLane = findViewById(R.id.radioGroupLane);
+        labelReminderDate = findViewById(R.id.labelReminderDate);
+        labelReminderMinute = findViewById(R.id.labelReminderMinute);
+        labelReminderHour = findViewById(R.id.labelReminderHour);
+        labelReminderPeriod = findViewById(R.id.labelReminderPeriod);
+        containerDatePicker = findViewById(R.id.containerDatePicker);
+        containerTimePicker = findViewById(R.id.containerTimePicker);
 
+        containerTimePicker.setOnClickListener(this);
+        containerDatePicker.setOnClickListener(this);
         buttonSave.setOnClickListener(this);
         radioGroupVehicleClass.setOnClickedButtonListener(this);
         radioGroupPaymentMethod.setOnClickedButtonListener(this);
@@ -133,6 +153,29 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
                     radioGroupLane.setPosition(i);
             }
         }
+
+        try {
+            if (TextUtils.isEmpty(entry.getStartTime())) throw new Exception();
+            Calendar timeCalendar = Calendar.getInstance();
+            timeCalendar.setTime(new SimpleDateFormat(Constants.DateFormat.PrintDate, Locale.ENGLISH).parse(entry.getStartTime()));
+            calendarReminderTime = timeCalendar;
+        } catch (Exception e) {
+            calendarReminderTime = Calendar.getInstance();
+        } finally {
+            onTimeSelected();
+        }
+    }
+
+    private void onTimeSelected() {
+        labelReminderDate.setText(
+                new SimpleDateFormat("MMMM d", Locale.ENGLISH).format(calendarReminderTime.getTime())
+                        .concat(Utils.getDateOrdinal(calendarReminderTime.get(Calendar.DAY_OF_MONTH)))
+                        .concat(", ")
+                        .concat(String.valueOf(calendarReminderTime.get(Calendar.YEAR))));
+
+        labelReminderHour.setText(new SimpleDateFormat("h", Locale.ENGLISH).format(calendarReminderTime.getTime()));
+        labelReminderMinute.setText(new SimpleDateFormat("mm", Locale.ENGLISH).format(calendarReminderTime.getTime()));
+        labelReminderPeriod.setText(String.valueOf(calendarReminderTime.get(Calendar.AM_PM) == Calendar.AM ? "am" : "pm"));
     }
 
     @Override
@@ -140,6 +183,38 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         switch (view.getId()) {
             case R.id.buttonSave:
                 doSaveEntry();
+                break;
+            case R.id.containerDatePicker:
+                DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                calendarReminderTime.set(Calendar.YEAR, year);
+                                calendarReminderTime.set(Calendar.MONTH, monthOfYear);
+                                calendarReminderTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                onTimeSelected();
+                            }
+                        },
+                        calendarReminderTime.get(Calendar.YEAR),
+                        calendarReminderTime.get(Calendar.MONTH),
+                        calendarReminderTime.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+                break;
+            case R.id.containerTimePicker:
+                TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+                                calendarReminderTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendarReminderTime.set(Calendar.MINUTE, minute);
+                                onTimeSelected();
+                            }
+                        },
+                        calendarReminderTime.get(Calendar.HOUR_OF_DAY),
+                        calendarReminderTime.get(Calendar.MINUTE), false);
+                timePickerDialog.show();
                 break;
         }
     }
@@ -166,7 +241,10 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         String passType = (radioGroupPassType.getPosition() >= 0) ? radioGroupPassType.getButtons().get(radioGroupPassType.getPosition()).getText() : "";
         String lane = (radioGroupLane.getPosition() >= 0) ? radioGroupLane.getButtons().get(radioGroupLane.getPosition()).getText() : "";
 
-        entry = new Entry(transactionNumber, registrationNumber, columnNumber, amountPaid, vehicleClass, paymentMethod, passType, lane);
+        String startTime = Utils.getParsedCalendar(calendarReminderTime);
+        String endTime = Utils.getParsedCalendar(Utils.getTomorrow(calendarReminderTime));
+
+        entry = new Entry(transactionNumber, registrationNumber, columnNumber, amountPaid, vehicleClass, paymentMethod, passType, lane, startTime, endTime);
         Utils.persistData(AddEntryActivity.this, Constants.DataBaseStorageKeys.LastPrintedReceipt, new Gson().toJson(entry));
 
         if (isValid(entry)) {
@@ -221,7 +299,16 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
             StyleableToast.makeText(this, "Please choose lane.", Toast.LENGTH_SHORT, R.style.ErrorToast).show();
             return false;
         }
+
+        if (!isDateValid(calendarReminderTime)) {
+            StyleableToast.makeText(this, "Please select a date of future.", Toast.LENGTH_SHORT, R.style.ErrorToast).show();
+            return false;
+        }
         return true;
+    }
+
+    private boolean isDateValid(Calendar dateTime) {
+        return dateTime != null;
     }
 
     @Override
