@@ -198,7 +198,7 @@ public class PrinterUtils {
             mPrinter.addText(String.format(format, "Tran. Number    :", entry.getTransactionNumber()));
             mPrinter.addText(String.format(format, "Date            :", entry.getStartTime()));
             mPrinter.addText(String.format(format, "Lane            :", entry.getLane()));
-            mPrinter.addText(String.format(format, "Operator        :", "cksgh"));
+            mPrinter.addText(String.format(format, "Operator        :", entry.getOperator()));
             mPrinter.addText(String.format(format, "Vehicle Class   :", entry.getVehicleClass()));
             mPrinter.addText(String.format(format, "Payment Method  :", entry.getPaymentMethod()));
 

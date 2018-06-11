@@ -20,10 +20,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/margin_default"
                 android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
                 android:layout_marginTop="@dimen/margin_default"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_default"
                 android:background="@color/white"
                 android:orientation="vertical">
 
@@ -114,7 +114,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_thin"
                             android:inputType="number"
-
                             android:maxLength="24" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -152,14 +151,44 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="10">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="2"
+                        android:src="@drawable/ic_baseline_person_24px"
+                        android:tint="@color/green_1" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:hint="Amount Paid">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/inputOperator"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_thin"
+                            android:inputType="textCapWords" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:alpha=".50"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_default"
                     android:layout_marginStart="@dimen/margin_default"
                     android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_default"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:alpha=".50"
                     android:background="@drawable/gradient_glossy_bar" />
 
                 <LinearLayout
@@ -172,10 +201,10 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/margin_small"
-                    android:paddingEnd="@dimen/margin_large"
                     android:paddingStart="@dimen/margin_large"
-                    android:paddingTop="@dimen/margin_small">
+                    android:paddingTop="@dimen/margin_small"
+                    android:paddingEnd="@dimen/margin_large"
+                    android:paddingBottom="@dimen/margin_small">
 
                     <LinearLayout
                         android:id="@+id/containerHour"
@@ -198,8 +227,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/margin_small"
                         android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"
                         android:fontFamily="@font/roboto_thin"
                         android:text=":"
                         android:textColor="@color/black" />
@@ -226,8 +255,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/margin_small"
                         android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"
                         android:fontFamily="@font/roboto_thin"
                         android:text=":"
                         android:textColor="@color/black" />
@@ -269,10 +298,10 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/margin_small"
-                    android:paddingEnd="@dimen/margin_large"
                     android:paddingStart="@dimen/margin_large"
-                    android:paddingTop="@dimen/margin_small">
+                    android:paddingTop="@dimen/margin_small"
+                    android:paddingEnd="@dimen/margin_large"
+                    android:paddingBottom="@dimen/margin_small">
 
                     <ImageView
                         android:id="@+id/iconCalendar"
@@ -296,10 +325,10 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginEnd="@dimen/margin_default"
                     android:layout_marginStart="@dimen/margin_default"
                     android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginEnd="@dimen/margin_default"
+                    android:layout_marginBottom="@dimen/margin_small"
                     android:alpha=".50"
                     android:background="@drawable/gradient_glossy_bar" />
 
@@ -322,8 +351,8 @@
                         android:id="@+id/radioGroupVehicleClass"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/margin_small"
                         android:layout_marginStart="@dimen/margin_small"
+                        android:layout_marginEnd="@dimen/margin_small"
                         app:rrbg_animateDrawables_enter="overshoot"
                         app:rrbg_animateTexts_enter="overshoot"
                         app:rrbg_backgroundColor="@color/black_2"
@@ -382,8 +411,8 @@
                             android:id="@+id/radioGroupPaymentMethod"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/margin_tiny"
                             android:layout_marginStart="@dimen/margin_tiny"
+                            android:layout_marginEnd="@dimen/margin_tiny"
                             app:rrbg_animateDrawables_enter="overshoot"
                             app:rrbg_animateTexts_enter="overshoot"
                             app:rrbg_backgroundColor="@color/black_2"
@@ -437,8 +466,8 @@
                             android:id="@+id/radioGroupPassType"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/margin_tiny"
                             android:layout_marginStart="@dimen/margin_tiny"
+                            android:layout_marginEnd="@dimen/margin_tiny"
                             app:rrbg_animateDrawables_enter="overshoot"
                             app:rrbg_animateTexts_enter="overshoot"
                             app:rrbg_backgroundColor="@color/black_2"
@@ -621,9 +650,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/margin_n_small"
         android:layout_marginLeft="@dimen/margin_tiny"
         android:layout_marginRight="@dimen/margin_tiny"
+        android:layout_marginBottom="@dimen/margin_n_small"
         app:cardBackgroundColor="@color/blue">
 
         <TextView

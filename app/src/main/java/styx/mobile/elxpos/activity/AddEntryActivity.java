@@ -40,7 +40,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
 
     private View buttonSave, containerDatePicker, containerTimePicker;
     private TextView labelReminderDate, labelReminderMinute, labelReminderHour, labelReminderPeriod;
-    private EditText inputTransactionNumber, inputRegistrationNumber, inputColumnNumber, inputAmountPaid;
+    private EditText inputTransactionNumber, inputRegistrationNumber, inputColumnNumber, inputAmountPaid, inputOperator;
     private RadioRealButtonGroup radioGroupVehicleClass, radioGroupPaymentMethod, radioGroupPassType, radioGroupLane;
     private Entry entry;
     private TPrinter tPrinter;
@@ -60,6 +60,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         inputRegistrationNumber = findViewById(R.id.inputRegistrationNumber);
         inputColumnNumber = findViewById(R.id.inputColumnNumber);
         inputAmountPaid = findViewById(R.id.inputAmountPaid);
+        inputOperator = findViewById(R.id.inputOperator);
         radioGroupVehicleClass = findViewById(R.id.radioGroupVehicleClass);
         radioGroupPaymentMethod = findViewById(R.id.radioGroupPaymentMethod);
         radioGroupPassType = findViewById(R.id.radioGroupPassType);
@@ -113,6 +114,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         inputTransactionNumber.setText(TextUtils.isEmpty(entry.getTransactionNumber()) ? "" : entry.getTransactionNumber());
         inputRegistrationNumber.setText(TextUtils.isEmpty(entry.getRegistrationNumber()) ? "" : entry.getRegistrationNumber());
         inputColumnNumber.setText(TextUtils.isEmpty(entry.getColumnNumber()) ? "" : entry.getColumnNumber());
+        inputOperator.setText(TextUtils.isEmpty(entry.getOperator()) ? "" : entry.getOperator());
 
         if (TextUtils.isEmpty(entry.getVehicleClass())) {
             radioGroupVehicleClass.setPosition(0);
@@ -235,6 +237,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         String transactionNumber = inputTransactionNumber.getText().toString();
         String registrationNumber = inputRegistrationNumber.getText().toString();
         String columnNumber = inputColumnNumber.getText().toString();
+        String operatorName = inputOperator.getText().toString();
 
         String vehicleClass = (radioGroupVehicleClass.getPosition() >= 0) ? radioGroupVehicleClass.getButtons().get(radioGroupVehicleClass.getPosition()).getText() : "";
         String paymentMethod = (radioGroupPaymentMethod.getPosition() >= 0) ? radioGroupPaymentMethod.getButtons().get(radioGroupPaymentMethod.getPosition()).getText() : "";
@@ -244,7 +247,7 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         String startTime = Utils.getParsedCalendar(calendarReminderTime);
         String endTime = Utils.getParsedCalendar(Utils.getTomorrow(calendarReminderTime));
 
-        entry = new Entry(transactionNumber, registrationNumber, columnNumber, amountPaid, vehicleClass, paymentMethod, passType, lane, startTime, endTime);
+        entry = new Entry(transactionNumber, registrationNumber, columnNumber, amountPaid, vehicleClass, paymentMethod, passType, lane, startTime, endTime, operatorName);
         Utils.persistData(AddEntryActivity.this, Constants.DataBaseStorageKeys.LastPrintedReceipt, new Gson().toJson(entry));
 
         if (isValid(entry)) {
@@ -281,6 +284,10 @@ public class AddEntryActivity extends AppCompatActivity implements PrinterCallBa
         }
         if (TextUtils.isEmpty(entry.getAmountPaid())) {
             StyleableToast.makeText(this, "Please enter the paid amount.", Toast.LENGTH_SHORT, R.style.ErrorToast).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(entry.getOperator())) {
+            StyleableToast.makeText(this, "Please enter the operator name.", Toast.LENGTH_SHORT, R.style.ErrorToast).show();
             return false;
         }
         if (TextUtils.isEmpty(entry.getVehicleClass())) {
